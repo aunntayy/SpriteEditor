@@ -1,0 +1,8 @@
+# Ignore macOS system files
+.DS_Store
+
+# Ignore build directory where compiled files are generated
+build/
+
+# Ignore user-specific Qt Creator settings
+SpriteEditor.pro.user
