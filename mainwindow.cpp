@@ -1,12 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "FramesTab.h"
-#include "FrameManager.h"
 
 #include <QToolBar>
 #include <QDockWidget>
 #include <QVBoxLayout>
-
+#include <QActionGroup>
 #include <QSplitter>
 #include <QLabel>
 
@@ -28,10 +26,68 @@ MainWindow::MainWindow(QWidget *parent)
     QToolBar* toolBar = addToolBar("Toolbar");
     toolBar->setFixedHeight(50);
     toolBar->setStyleSheet("background-color: rgb(100, 100, 100);"); //change color
+
+    // File action
     QAction* action1 = new QAction("File Stuff", this);
     toolBar->addAction(action1);
-    QAction* action2 = new QAction("Other Tools", this);
-    toolBar->addAction(action2);
+
+    // tool bar buttons
+    // Spacer widget to push actions to the right
+    QWidget* spacer = new QWidget(this);
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    spacer->setFixedWidth(600); // Adjust this width to control the spacing
+    toolBar->addWidget(spacer); // Add spacer to toolbar
+
+    // Create an action group for mutually exclusive checkable actions
+    QActionGroup* toolGroup = new QActionGroup(this);
+    toolGroup->setExclusive(true); // Only one action can be checked at a time
+
+    // Checkable actions for Color Picker, Brush, Erase, and Fill with icons
+
+    // color picker button
+    QAction* colorPickerAction = new QAction(QIcon(""), "Color", this);
+    colorPickerAction->setCheckable(true);
+    toolGroup->addAction(colorPickerAction);
+    toolBar->addAction(colorPickerAction);
+
+    // brush button
+    QAction* brushAction = new QAction(QIcon(":/img/brush.png"), "Brush", this);
+    brushAction->setCheckable(true);
+    toolGroup->addAction(brushAction);
+    toolBar->addAction(brushAction);
+
+    // erase button
+    QAction* eraseAction = new QAction(QIcon(":/img/erase.png"), "Erase", this);
+    eraseAction->setCheckable(true);
+    toolGroup->addAction(eraseAction);
+    toolBar->addAction(eraseAction);
+
+    // fill button
+    QAction* fillAction = new QAction(QIcon(":/img/fill.png"), "Fill", this);
+    fillAction->setCheckable(true);
+    toolGroup->addAction(fillAction);
+    toolBar->addAction(fillAction);
+
+    // Add a separator between the move and undo buttons
+    toolBar->addSeparator();
+
+    // move button
+    QAction* moveAction = new QAction(QIcon(":/img/move.png"), "Move", this);
+    moveAction->setCheckable(true);
+    toolGroup->addAction(moveAction);
+    toolBar->addAction(moveAction);
+
+    // undo button
+    QAction* undoAction = new QAction(QIcon(":/img/undo.png"), "Undo", this);
+    undoAction->setCheckable(true);
+    toolGroup->addAction(undoAction);
+    toolBar->addAction(undoAction);
+
+    // set icon size here
+    toolBar->setIconSize(QSize(32, 32));
+
+
+
 
 
 
@@ -92,16 +148,6 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget* canvas = new QWidget();
     canvas->setStyleSheet("background-color: rgb(0, 0, 0);");
     setCentralWidget(canvas);
-
-    // Initialize FrameManager
-    frameManager = new FrameManager();
-
-    // Initialize FramesTab and pass in the FrameManager
-    framesTab = new FramesTab(frameManager, this);
-
-    // Add FramesTab to the main window layout
-    setCentralWidget(framesTab);
-
 }
 
 MainWindow::~MainWindow()

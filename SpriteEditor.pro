@@ -9,14 +9,10 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    framemanager.cpp \
-    framestab.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
-    framemanager.h \
-    framestab.h \
     mainwindow.h
 
 FORMS += \
@@ -28,4 +24,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    README.md
+    README.md \
+    img/brush.png \
+    img/erase.png \
+    img/fill.png \
+    img/move.png
