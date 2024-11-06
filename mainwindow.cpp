@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "FramesTab.h"
+#include "FrameManager.h"
 
 #include <QToolBar>
 #include <QDockWidget>
@@ -90,6 +92,15 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget* canvas = new QWidget();
     canvas->setStyleSheet("background-color: rgb(0, 0, 0);");
     setCentralWidget(canvas);
+
+    // Initialize FrameManager
+    frameManager = new FrameManager();
+
+    // Initialize FramesTab and pass in the FrameManager
+    framesTab = new FramesTab(frameManager, this);
+
+    // Add FramesTab to the main window layout
+    setCentralWidget(framesTab);
 
 }
 
