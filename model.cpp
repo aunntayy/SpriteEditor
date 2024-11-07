@@ -11,7 +11,7 @@ void Model::addFrame() {
 
 void Model::duplicateFrame(int index) {
     if (index >= 0 && index < frameList.size()) {
-        frameList.append(new Frame(*frameList[index]));
+         frameList.insert(index + 1, new Frame(*frameList[index]));
         qDebug() << "Frame duplicated at index" << index << ". Total frames:" << frameList.size();
         emit updateFrameList();
     }

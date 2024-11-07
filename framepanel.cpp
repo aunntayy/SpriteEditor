@@ -1,3 +1,4 @@
+
 #include "framepanel.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -17,8 +18,6 @@ FramePanel::FramePanel(Model *model, QWidget *parent)
     scrollArea->setWidget(scrollWidget);
 
     mainLayout->addWidget(scrollArea);
-
-    connect(model, &Model::updateFrameList, this, &FramePanel::updateFrameList);
 
     // Buttons for Add, Duplicate, and Remove
     QHBoxLayout *buttonLayout = new QHBoxLayout;
@@ -101,9 +100,11 @@ void FramePanel::updateButtonIcon(QPushButton *button, const QPixmap &pixmap) {
 }
 
 void FramePanel::selectFrame(int index) {
-    highlightSelectedFrame(index);
-    selectedFrameIndex = index;
-    qDebug() << "Selected frame index:" << selectedFrameIndex;
+    if (index >= 0 && index < frameButtons.size()) {
+        selectedFrameIndex = index;
+        qDebug() << "Selected frame index:" << selectedFrameIndex;
+        highlightSelectedFrame(index);
+    }
 }
 
 void FramePanel::highlightSelectedFrame(int index) {
