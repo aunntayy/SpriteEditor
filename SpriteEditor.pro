@@ -9,11 +9,19 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    frame.cpp \
+    framepanel.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    model.cpp \
+    pixeleditor.cpp
 
 HEADERS += \
-    mainwindow.h
+    frame.h \
+    framepanel.h \
+    mainwindow.h \
+    model.h \
+    pixeleditor.h
 
 FORMS += \
     mainwindow.ui
@@ -24,4 +32,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    README.md
+    README.md \
+    img/brush.png \
+    img/erase.png \
+    img/fill.png \
+    img/move.png
+
+RESOURCES += resources.qrc \
+    resources.qrc
