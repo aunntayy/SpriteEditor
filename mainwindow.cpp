@@ -7,12 +7,14 @@
 #include <QActionGroup>
 #include <QSplitter>
 #include <QLabel>
+#include <QSlider>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    editor = new pixelEditor(this);
 
     // window
     this->setWindowTitle("CS3505 Sprite Editor");
@@ -34,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Spacer widget to push actions to the right
     QWidget* spacer = new QWidget(this);
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    spacer->setFixedWidth(600); // Adjust this width to control the spacing
+    spacer->setFixedWidth(400); // Adjust this width to control the spacing
     toolBar->addWidget(spacer); // Add spacer to toolbar
 
     // Create an action group for mutually exclusive checkable actions
@@ -48,6 +50,14 @@ MainWindow::MainWindow(QWidget *parent)
     colorPickerAction->setCheckable(true);
     toolGroup->addAction(colorPickerAction);
     toolBar->addAction(colorPickerAction);
+
+
+    // brush size slider
+    QSlider* brushSizeSlider = new QSlider(Qt::Horizontal, this);
+    brushSizeSlider->setFixedWidth(150);
+    brushSizeSlider->setRange(1, 10); // Brush size range from 1 to 100
+    brushSizeSlider->setValue(10); // Default value
+    toolBar->addWidget(brushSizeSlider);
 
     // brush button
     QAction* brushAction = new QAction(QIcon(":/img/img/brush.png"), "Brush", this);
@@ -66,6 +76,21 @@ MainWindow::MainWindow(QWidget *parent)
     fillAction->setCheckable(true);
     toolGroup->addAction(fillAction);
     toolBar->addAction(fillAction);
+
+    // connect actions to setTool
+    connect(brushSizeSlider, &QSlider::valueChanged, this, [=](int value) {
+        editor->setToolSize(value);
+        qDebug() << "Brush size set to:" << value;
+    });
+    connect(brushAction, &QAction::triggered, this, [=]() {
+        editor->setTool(pixelEditor::Brush);
+    });
+    connect(eraseAction, &QAction::triggered, this, [=]() {
+        editor->setTool(pixelEditor::Erase);
+    });
+    connect(fillAction, &QAction::triggered, this, [=]() {
+        editor->setTool(pixelEditor::Fill);
+    });
 
     // Add a separator between the move and undo buttons
     toolBar->addSeparator();
@@ -152,4 +177,5 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete editor;
 }
