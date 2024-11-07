@@ -19,6 +19,7 @@ private slots:
     void onDuplicateFrame();
     void onRemoveFrame();
     void updateFrameList();
+    void selectFrame(int index);
 
 private:
     Model *model;
@@ -31,8 +32,11 @@ private:
     QPushButton *duplicateButton;
     QPushButton *removeButton;
 
+    int selectedFrameIndex = -1;
+
     void addFrameButton(int index); // Helper to add a button to the layout
     void updateButtonIcon(QPushButton *button, const QPixmap &pixmap);
+    void highlightSelectedFrame(int index);
 };
 
 #endif // FRAMEPANEL_H

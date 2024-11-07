@@ -1,9 +1,7 @@
 #include "framepanel.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-
-#include <QPixmap>
-#include <QIcon>
+#include <QDebug>
 
 FramePanel::FramePanel(Model *model, QWidget *parent)
     : QWidget(parent), model(model) {
@@ -47,20 +45,18 @@ void FramePanel::onAddFrame() {
 }
 
 void FramePanel::onDuplicateFrame() {
-    int index = frameButtons.size() - 1;
-    if (index >= 0)
+    if (selectedFrameIndex >= 0 && selectedFrameIndex < frameButtons.size())
     {
         qDebug() << "Duplicate Frame button clicked";
-        model->duplicateFrame(index);
+        model->duplicateFrame(selectedFrameIndex);
     }
 }
 
 void FramePanel::onRemoveFrame() {
-    int index = frameButtons.size() - 1;
-    if (index >= 0)
-    {
+    if (selectedFrameIndex >= 0 && selectedFrameIndex < frameButtons.size()) {
+        model->removeFrame(selectedFrameIndex);
+        selectedFrameIndex = -1;  // Reset selection
         qDebug() << "Remove Frame button clicked";
-        model->removeFrame(index);
     }
 }
 
@@ -76,15 +72,20 @@ void FramePanel::updateFrameList() {
     for (int i = 0; i < model->getFrames().size(); ++i) {
         addFrameButton(i);
     }
+
+    // Reset selection after updating the list
+    selectedFrameIndex = -1;
 }
 
 void FramePanel::addFrameButton(int index) {
     // Create a new button for the frame
     QPushButton *button = new QPushButton(this);
     button->setText(QString::number(index + 1));
-    button->setFixedSize(100, 100); // Set size for button thumbnails
+    button->setFixedSize(100, 100);
 
-    // Get a placeholder or real pixmap for frame (using a dummy here)
+    connect(button, &QPushButton::clicked, this, [this, index]() {
+        selectFrame(index);});
+
     QPixmap pixmap(100, 100); // Placeholder size
     pixmap.fill(Qt::gray); // Replace this with actual frame content
     updateButtonIcon(button, pixmap);
@@ -98,4 +99,23 @@ void FramePanel::updateButtonIcon(QPushButton *button, const QPixmap &pixmap) {
     QIcon icon(pixmap);
     button->setIcon(icon);
     button->setIconSize(pixmap.size());
+}
+
+void FramePanel::selectFrame(int index) {
+    // Highlight the selected frame and update the index
+    highlightSelectedFrame(index);
+    selectedFrameIndex = index;
+    qDebug() << "Selected frame index:" << selectedFrameIndex;
+}
+
+void FramePanel::highlightSelectedFrame(int index) {
+    // Remove highlighting from all buttons
+    for (int i = 0; i < frameButtons.size(); ++i) {
+        frameButtons[i]->setStyleSheet("");
+    }
+
+    // Highlight the selected button
+    if (index >= 0 && index < frameButtons.size()) {
+        frameButtons[index]->setStyleSheet("border: 2px solid blue;");
+    }
 }
