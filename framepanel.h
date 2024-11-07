@@ -34,7 +34,7 @@ private:
 
     int selectedFrameIndex = -1;
 
-    void addFrameButton(int index); // Helper to add a button to the layout
+    void addFrameButton(int index);
     void updateButtonIcon(QPushButton *button, const QPixmap &pixmap);
     void highlightSelectedFrame(int index);
 };

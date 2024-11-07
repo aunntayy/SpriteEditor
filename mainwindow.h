@@ -5,8 +5,8 @@
 
 #include <pixeleditor.h>
 
-#include "model.h"         // Include Model class
-#include "framepanel.h"     // Include FramePanel class
+#include "model.h"
+#include "framepanel.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -26,8 +26,8 @@ public:
 private:
     Ui::MainWindow *ui;
     pixelEditor* editor;
-    Model *model;             // Declare model as a member variable
-    FramePanel *framePanel;   // Declare framePanel as a member variable
+    Model *model;
+    FramePanel *framePanel;
 
 };
 

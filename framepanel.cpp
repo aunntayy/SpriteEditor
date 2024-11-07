@@ -68,7 +68,6 @@ void FramePanel::updateFrameList() {
     }
     frameButtons.clear();
 
-    // Recreate buttons based on model frames
     for (int i = 0; i < model->getFrames().size(); ++i) {
         addFrameButton(i);
     }
@@ -86,8 +85,8 @@ void FramePanel::addFrameButton(int index) {
     connect(button, &QPushButton::clicked, this, [this, index]() {
         selectFrame(index);});
 
-    QPixmap pixmap(100, 100); // Placeholder size
-    pixmap.fill(Qt::gray); // Replace this with actual frame content
+    QPixmap pixmap(100, 100);
+    pixmap.fill(Qt::gray);
     updateButtonIcon(button, pixmap);
 
     // Add button to layout and vector
@@ -102,19 +101,16 @@ void FramePanel::updateButtonIcon(QPushButton *button, const QPixmap &pixmap) {
 }
 
 void FramePanel::selectFrame(int index) {
-    // Highlight the selected frame and update the index
     highlightSelectedFrame(index);
     selectedFrameIndex = index;
     qDebug() << "Selected frame index:" << selectedFrameIndex;
 }
 
 void FramePanel::highlightSelectedFrame(int index) {
-    // Remove highlighting from all buttons
     for (int i = 0; i < frameButtons.size(); ++i) {
         frameButtons[i]->setStyleSheet("");
     }
 
-    // Highlight the selected button
     if (index >= 0 && index < frameButtons.size()) {
         frameButtons[index]->setStyleSheet("border: 2px solid blue;");
     }

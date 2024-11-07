@@ -3,8 +3,8 @@
 
 class Frame {
 public:
-    Frame(); // Constructor for a new frame
-    Frame(const Frame& other); // Copy constructor for duplicating
+    Frame();
+    Frame(const Frame& other);
     ~Frame();
 };
 
