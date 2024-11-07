@@ -29,3 +29,6 @@ DISTFILES += \
     img/erase.png \
     img/fill.png \
     img/move.png
+
+RESOURCES += resources.qrc \
+    resources.qrc

@@ -21,7 +21,6 @@ MainWindow::MainWindow(QWidget *parent)
     this->setStatusBar(nullptr);
 
 
-
     // toolbar
     QToolBar* toolBar = addToolBar("Toolbar");
     toolBar->setFixedHeight(50);
@@ -51,19 +50,19 @@ MainWindow::MainWindow(QWidget *parent)
     toolBar->addAction(colorPickerAction);
 
     // brush button
-    QAction* brushAction = new QAction(QIcon(":/img/brush.png"), "Brush", this);
+    QAction* brushAction = new QAction(QIcon(":/img/img/brush.png"), "Brush", this);
     brushAction->setCheckable(true);
     toolGroup->addAction(brushAction);
     toolBar->addAction(brushAction);
 
     // erase button
-    QAction* eraseAction = new QAction(QIcon(":/img/erase.png"), "Erase", this);
+    QAction* eraseAction = new QAction(QIcon(":/img/img/erase.png"), "Erase", this);
     eraseAction->setCheckable(true);
     toolGroup->addAction(eraseAction);
     toolBar->addAction(eraseAction);
 
     // fill button
-    QAction* fillAction = new QAction(QIcon(":/img/fill.png"), "Fill", this);
+    QAction* fillAction = new QAction(QIcon(":/img/img/fill.png"), "Fill", this);
     fillAction->setCheckable(true);
     toolGroup->addAction(fillAction);
     toolBar->addAction(fillAction);
@@ -72,13 +71,13 @@ MainWindow::MainWindow(QWidget *parent)
     toolBar->addSeparator();
 
     // move button
-    QAction* moveAction = new QAction(QIcon(":/img/move.png"), "Move", this);
+    QAction* moveAction = new QAction(QIcon(":/img/img/move.png"), "Move", this);
     moveAction->setCheckable(true);
     toolGroup->addAction(moveAction);
     toolBar->addAction(moveAction);
 
     // undo button
-    QAction* undoAction = new QAction(QIcon(":/img/undo.png"), "Undo", this);
+    QAction* undoAction = new QAction(QIcon(":/img/img/undo.png"), "Undo", this);
     undoAction->setCheckable(true);
     toolGroup->addAction(undoAction);
     toolBar->addAction(undoAction);
