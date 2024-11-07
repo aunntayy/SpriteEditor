@@ -148,17 +148,13 @@ MainWindow::MainWindow(QWidget *parent)
         "background-color: rgb(100, 100, 100);"); // change color
     QAction *action1 = new QAction("File Stuff", this);
     toolBar->addAction(action1);
-    QAction *action2 = new QAction("Other Tools", this);
-    toolBar->addAction(action2);
+
 
     // panel
     QDockWidget *panel = new QDockWidget("Panel", this);
 
     toolBar->setStyleSheet("background-color: rgb(100, 100, 100);"); //change color
 
-    // File action
-    QAction* action1 = new QAction("File Stuff", this);
-    toolBar->addAction(action1);
 
     // tool bar buttons
     // Spacer widget to push actions to the right
@@ -241,26 +237,12 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
-    // panel setup
-    QDockWidget* panel = new QDockWidget("Panel", this);
+
 
     panel->setFixedWidth(350);
     QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     panel->setSizePolicy(sizePolicy);
     panel->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-
-
-    // panel - widget to hold layout
-    QWidget *panelContainer = new QWidget();
-    panelContainer->setStyleSheet(
-        "background-color: rgb(100, 100, 100);"); // change color
-    panel->setWidget(panelContainer);
-
-    // panel - previewer
-    QWidget *previewer = new QWidget();
-    previewer->setFixedHeight(325);
-    previewer->setStyleSheet(
-        "background-color: rgb(200, 200, 200);"); // change color
 
     QWidget *colorsTab = new QWidget();
 
@@ -337,7 +319,6 @@ MainWindow::MainWindow(QWidget *parent)
     framePanel = new FramePanel(model, this);  // Instantiate FramePanel with Model
 
     // Tab widget for Colors and Frames
-    QTabWidget* tabWidget = new QTabWidget();
     tabWidget->setTabShape(QTabWidget::Triangular);
     tabWidget->addTab(new QWidget(), "Colors");
     tabWidget->addTab(framePanel, "Frames"); // Use framePanel as the "Frames" tab
@@ -364,7 +345,6 @@ MainWindow::MainWindow(QWidget *parent)
         );
 
     // Layout for panelContainer to hold previewer and tabWidget
-    QVBoxLayout* layout = new QVBoxLayout();
 
     layout->addWidget(previewer);
     layout->addWidget(tabWidget);
