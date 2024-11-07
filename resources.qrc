@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>img/brush.png</file>
+        <file>img/erase.png</file>
+        <file>img/fill.png</file>
+        <file>img/move.png</file>
+        <file>img/undo.png</file>
+    </qresource>
+</RCC>
