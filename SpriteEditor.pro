@@ -13,13 +13,15 @@ SOURCES += \
     framepanel.cpp \
     main.cpp \
     mainwindow.cpp \
-    model.cpp
+    model.cpp \
+    pixeleditor.cpp
 
 HEADERS += \
     frame.h \
     framepanel.h \
     mainwindow.h \
-    model.h
+    model.h \
+    pixeleditor.h
 
 FORMS += \
     mainwindow.ui
@@ -30,4 +32,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    README.md
+    README.md \
+    img/brush.png \
+    img/erase.png \
+    img/fill.png \
+    img/move.png
+
+RESOURCES += resources.qrc \
+    resources.qrc

@@ -2,8 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+
+#include <pixeleditor.h>
+
 #include "model.h"         // Include Model class
 #include "framepanel.h"     // Include FramePanel class
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -21,9 +25,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
-
+    pixelEditor* editor;
     Model *model;             // Declare model as a member variable
     FramePanel *framePanel;   // Declare framePanel as a member variable
+
 };
 
 #endif // MAINWINDOW_H
