@@ -19,8 +19,7 @@ void Canvas::mousePressEvent(QMouseEvent* mouseEvent) {
     if (mouseEvent->button() == Qt::LeftButton) {
         lastPoint = mouseEvent->pos();
         qDebug() << "Mouse pressed at position:" << lastPoint << "with brush size:" << brushSize << "and color:" << brushColor;
-
-
+        drawPixel(lastPoint.x(), lastPoint.y(),  Qt::red, brushSize);
     }
 }
 
@@ -28,6 +27,13 @@ void Canvas::mouseMoveEvent(QMouseEvent* mouseEvent) {
 
 }
 
-void Canvas::mouseReleaseEvent(QMouseEvent* event) {
+void Canvas::mouseReleaseEvent(QMouseEvent* mouseEvent) {
 
+}
+// test method to draw pixel
+void Canvas::drawPixel(int x, int y, const QColor& color, int size) {
+    QPainter painter(&image);
+    painter.setPen(QPen(color, size, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter.drawPoint(x, y);
+    update();
 }
