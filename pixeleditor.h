@@ -20,6 +20,9 @@ public:
 
     void setTool(Tools pickTool);
     int setToolSize(int toolSize);
+signals:
+    void toolChanged();
+    void brushSizeChanged(int size);
 private:
     Tools currentTool;
     int currentToolSize;

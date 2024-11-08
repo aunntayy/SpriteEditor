@@ -6,8 +6,8 @@
 #include <QPushButton>
 #include <QSlider>
 
-#include <pixeleditor.h>
-
+#include "pixeleditor.h"
+#include "canvas.h"
 #include "model.h"
 #include "framepanel.h"
 
@@ -32,6 +32,7 @@ private:
     pixelEditor* editor;
     Model *model;
     FramePanel *framePanel;
+    Canvas *canvas;
 
     // Color Manager
     QVector<QVector<QPushButton *>> colorButtons;

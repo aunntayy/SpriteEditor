@@ -4,6 +4,7 @@
 
 #include "model.h"
 #include "framepanel.h"
+#include "canvas.h"
 
 #include <QToolBar>
 
@@ -137,7 +138,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Instantiate the model
     model = new Model(this);
-
+    // Canvas setup
+    canvas = new Canvas(this);
+    setCentralWidget(canvas);
 
 
     // toolbar
@@ -411,16 +414,14 @@ void MainWindow::updateColorCustomPalette(){
         }
     }
 
-    // Canvas setup
-    QWidget* canvas = new QWidget();
-    canvas->setStyleSheet("background-color: rgb(0, 0, 0);");
-    setCentralWidget(canvas);
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
     delete editor;
+    delete canvas;
 
 }
 
