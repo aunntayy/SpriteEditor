@@ -2,10 +2,11 @@
 #include <QPainter>
 #include <QMouseEvent>
 
-Canvas::Canvas(QWidget* parent)
-    : QWidget(parent), drawing(false), brushSize(5), brushColor(Qt::white), currentTool(0) {
-    image = QImage(size(), QImage::Format_ARGB32);
-    image.fill(Qt::black); // Initial canvas color
+Canvas::Canvas(pixelEditor* editor, int width, int height, int pixelSize, QWidget* parent)
+    : QWidget(parent), editor(editor), pixelSize(pixelSize), brushSize(5), brushColor(Qt::white), currentTool(0) {
+    image = QImage(width, height, QImage::Format_ARGB32);
+    image.fill(Qt::white); // Initial canvas color
+    setFixedSize(width, height); // Set the canvas size
     setAttribute(Qt::WA_StaticContents);
 }
 
@@ -14,27 +15,19 @@ void Canvas::paintEvent(QPaintEvent* event) {
     painter.drawImage(0, 0, image);
 }
 
-void Canvas::mousePressEvent(QMouseEvent* event) {
-    if (event->button() == Qt::LeftButton) {
-        drawing = true;
-        lastPoint = event->pos();
+void Canvas::mousePressEvent(QMouseEvent* mouseEvent) {
+    if (mouseEvent->button() == Qt::LeftButton) {
+        lastPoint = mouseEvent->pos();
+        qDebug() << "Mouse pressed at position:" << lastPoint << "with brush size:" << brushSize << "and color:" << brushColor;
+
+
     }
 }
 
-void Canvas::mouseMoveEvent(QMouseEvent* event) {
-    if (drawing && event->buttons() & Qt::LeftButton) {
-        if (currentTool == 1) { // Assuming 1 is Brush from pixelEditor
-            QPainter painter(&image);
-            painter.setPen(QPen(brushColor, brushSize, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-            painter.drawLine(lastPoint, event->pos());
-            lastPoint = event->pos();
-            update();
-        }
-    }
+void Canvas::mouseMoveEvent(QMouseEvent* mouseEvent) {
+
 }
 
 void Canvas::mouseReleaseEvent(QMouseEvent* event) {
-    if (event->button() == Qt::LeftButton && drawing) {
-        drawing = false;
-    }
+
 }

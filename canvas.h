@@ -4,24 +4,28 @@
 #include <QWidget>
 #include <QImage>
 
+#include "pixeleditor.h"
+
 class Canvas : public QWidget
 { Q_OBJECT
 public:
-    explicit Canvas(QWidget* parent = nullptr);
+    explicit Canvas(pixelEditor* editor, int width, int height, int pixelSize, QWidget* parent = nullptr);
 
 protected:
     void paintEvent(QPaintEvent* event) override;
-    void mousePressEvent(QMouseEvent* event) override;
-    void mouseMoveEvent(QMouseEvent* event) override;
+    void mousePressEvent(QMouseEvent* mouseEvent) override;
+    void mouseMoveEvent(QMouseEvent* mouseEvent) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
 
 private:
-    QImage image; // Image for drawing
-    bool drawing; // Indicates if the mouse is pressed for drawing
-    QPoint lastPoint; // Last mouse position for drawing lines
-    int brushSize; // Brush size
-    QColor brushColor; // Brush color
-    int currentTool; // Current tool selected (integrated with pixelEditor)
+    int pixelSize;
+    QImage image;
+    QPoint lastPoint;
+    int brushSize;
+    QColor brushColor;
+    int currentTool;
+
+    pixelEditor* editor;
 };
 
 #endif // CANVAS_H

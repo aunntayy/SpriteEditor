@@ -4,7 +4,7 @@ pixelEditor::pixelEditor(QObject *parent) : QObject(parent) {}
 
 void pixelEditor::setTool(Tools pickTool){
     currentTool = pickTool;
-    emit toolChanged(Tools::(currentTool));
+
 }
 
 int pixelEditor::setToolSize(int toolSize){

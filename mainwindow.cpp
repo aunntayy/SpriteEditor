@@ -139,7 +139,13 @@ MainWindow::MainWindow(QWidget *parent)
     // Instantiate the model
     model = new Model(this);
     // Canvas setup
-    canvas = new Canvas(this);
+    // Create the Canvas instance and set it as the central widget
+    int canvasWidth = 500; // Example width
+    int canvasHeight = 500; // Example height
+    int pixelSize = 10; // Example pixel size
+
+    canvas = new Canvas(editor, canvasWidth, canvasHeight, pixelSize, this);
+    qDebug() << "canvas created";
     setCentralWidget(canvas);
 
 
