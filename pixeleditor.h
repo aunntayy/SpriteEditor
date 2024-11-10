@@ -14,8 +14,9 @@ public:
     explicit pixelEditor(QObject* parent = nullptr);
 
     void setCanvasInstance(Canvas* canvas);
+    // Add in more tool after undo to keep the order right
     enum Tools {
-        ColorPicker,
+        none,
         Brush,
         Erase,
         Fill,
@@ -28,6 +29,7 @@ public:
 
     void drawPixel(int x, int y, QColor color);
     void erasePixel(int x, int y, QColor color);
+    void fillColor(int x, int y, QColor color);
 
 public slots:
     void drawWithCurrTool(QPoint point, QColor color);

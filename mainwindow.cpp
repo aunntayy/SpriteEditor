@@ -168,22 +168,16 @@ MainWindow::MainWindow(QWidget *parent)
     QActionGroup* toolGroup = new QActionGroup(this);
     toolGroup->setExclusive(true); // Only one action can be checked at a time
 
-    // Checkable actions for Color Picker, Brush, Erase, and Fill with icons
-
-    // color picker button
-    QAction* colorPickerAction = new QAction(QIcon(""), "Color", this);
-    colorPickerAction->setCheckable(true);
-    toolGroup->addAction(colorPickerAction);
-    toolBar->addAction(colorPickerAction);
-
+    // Checkable actions for Brush, Erase, and Fill with icons
 
     // brush size slider
     QSlider* brushSizeSlider = new QSlider(Qt::Horizontal, this);
-    brushSizeSlider->setFixedWidth(150);
-    brushSizeSlider->setRange(1, 100); // Brush size range from 1 to 100
-    int defaultPixelVal = 30;
-    brushSizeSlider->setValue(defaultPixelVal);
-    editor->setPixelSize(defaultPixelVal);
+    brushSizeSlider->setFixedWidth(100);
+    QVector<int> brushSize = {20, 40, 60, 80, 100}; // adjust brush size here
+    brushSizeSlider->setRange(0, 4); // 4 different brush size
+    // set default starting slider to 20px
+    brushSizeSlider->setValue(0);
+    editor->setPixelSize(brushSize[0]);
     toolBar->addWidget(brushSizeSlider);
 
     // brush button
@@ -205,9 +199,9 @@ MainWindow::MainWindow(QWidget *parent)
     toolBar->addAction(fillAction);
 
     // connect actions to setTool
-    connect(brushSizeSlider, &QSlider::valueChanged, this, [=](int value) {
-        editor->setPixelSize(value);
-        qDebug() << "Pixel size set to:" << value;
+    connect(brushSizeSlider, &QSlider::valueChanged, [=](int index) {
+        editor->setPixelSize(brushSize[index]);
+        qDebug() << "Current brush size:" << brushSize[index];
     });
     connect(brushAction, &QAction::triggered, this, [=]() {
         editor->setTool(pixelEditor::Brush);
