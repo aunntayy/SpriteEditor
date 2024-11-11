@@ -22,7 +22,7 @@ int pixelEditor::setPixelSize(int size){
     qDebug() << "Tool set to:" << pixelSize;
 }
 
-void pixelEditor::drawWithCurrTool(QPoint point) {
+void pixelEditor::drawWithCurrTool(QPoint point, QColor color) {
 
     qDebug() << "Drawing at" << point << "using tool" << currentTool;
     // Brush tool
@@ -35,6 +35,10 @@ void pixelEditor::drawWithCurrTool(QPoint point) {
     if (currentTool == 3) {
         fillColor(point.x(), point.y(), currentBrushColor);
     }
+
+    if(currentTool == 5){
+        undoLastAction();
+    }
 }
 
 void pixelEditor::drawPixel(int x, int y, QColor color) {
@@ -42,6 +46,9 @@ void pixelEditor::drawPixel(int x, int y, QColor color) {
         // Get nearest grid point based on pixel size
         int gridX = (x / pixelSize) * pixelSize;
         int gridY = (y / pixelSize) * pixelSize;
+
+        QColor prevColor = canvasInstance->image.pixelColor(gridX, gridY);
+        addActionToHistory(gridX, gridY, prevColor);
 
         QPainter painter(&canvasInstance->image);
         painter.setPen(Qt::NoPen); // Set no border
@@ -60,6 +67,9 @@ void pixelEditor::erasePixel(int x, int y, QColor color) {
         // Get nearest grid point based on pixel size
         int gridX = (x / pixelSize) * pixelSize;
         int gridY = (y / pixelSize) * pixelSize;
+
+        QColor prevColor = canvasInstance->image.pixelColor(gridX, gridY);
+        addActionToHistory(gridX, gridY, prevColor);
 
         QPainter painter(&canvasInstance->image);
         painter.setPen(Qt::NoPen);
@@ -110,4 +120,21 @@ void pixelEditor::fillColor(int x, int y, QColor color){
 void pixelEditor::setBrushColor(const QColor &color) {
     currentBrushColor = color;
     qDebug() << "Brush color set to:" << currentBrushColor.name();
+}
+
+void pixelEditor::addActionToHistory(int x, int y, const QColor& prevColor){
+    qDebug() << "Adding action to history:" << "X:" << x << "Y:" << y << "PrevColor:" << prevColor.name();
+    actionHistory.push({x,y,prevColor});
+}
+
+void pixelEditor::undoLastAction() {
+    if (actionHistory.isEmpty() || !canvasInstance) return;
+    PixelAction lastAction = actionHistory.pop();
+    qDebug() << "Undoing last action at X:" << lastAction.x << "Y:" << lastAction.y << "PrevColor:" << lastAction.prevColor.name();
+
+
+    QImage& image = canvasInstance->image;
+    image.setPixelColor(lastAction.x, lastAction.y, lastAction.prevColor);
+
+    canvasInstance->update();
 }

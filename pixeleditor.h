@@ -4,8 +4,10 @@
 #include <QObject>
 #include<QColor>
 #include <QPoint>
-
+#include <QStack>
 class Canvas;
+
+
 
 class pixelEditor : public QObject
 {
@@ -31,15 +33,25 @@ public:
     void erasePixel(int x, int y, QColor color);
     void fillColor(int x, int y, QColor color);
     void setBrushColor(const QColor &color);
+
+    void addActionToHistory(int x, int y, const QColor& prevColor);
+    void undoLastAction();
 public slots:
     void drawWithCurrTool(QPoint point, QColor color);
 
 
 private:
+    struct PixelAction {
+        int x, y;
+        QColor prevColor;
+    };
+
     Tools currentTool;
     int pixelSize;
     Canvas* canvasInstance;
     QColor currentBrushColor;
+    QStack<PixelAction> actionHistory;
+
 };
 
 #endif // PIXELEDITOR_H

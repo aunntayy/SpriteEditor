@@ -228,6 +228,12 @@ MainWindow::MainWindow(QWidget *parent)
     toolGroup->addAction(undoAction);
     toolBar->addAction(undoAction);
 
+    connect(undoAction, &QAction::triggered, [=]() {
+        editor->setTool(pixelEditor::Undo);
+        editor->drawWithCurrTool(QPoint(), QColor());
+    });
+
+
     // set icon size here
     toolBar->setIconSize(QSize(32, 32));
 
