@@ -57,3 +57,38 @@ QVector<Frame*> Model::getFrames() const
 {
     return frameList;
 }
+
+int Model::getFrameRate() const
+{
+    return frameRate;
+}
+
+void Model::setFrameRate(int newFrameRate)
+{
+    frameRate = newFrameRate;
+}
+
+int Model::getResolution() const
+{
+    return resolution;
+}
+
+void Model::setResolution(int newResolution)
+{
+    resolution = newResolution;
+}
+
+bool Model::isFileSaved() const
+{
+    return isSaved;
+}
+
+void Model::fileSaved()
+{
+    isSaved = true;
+}
+
+void Model::fileNotSaved()
+{
+    isSaved = false;
+}

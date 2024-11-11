@@ -6,16 +6,27 @@
 #include <QColor>
 #include "frame.h"
 
-class Model : public QObject {
+class Model : public QObject
+{
     Q_OBJECT
 
 public:
     Model(QObject *parent = nullptr);
     ~Model();
+
+    bool isFileSaved() const;
+    int getFrameRate() const;
+    int getResolution() const;
+    QVector<Frame*> getFrames() const;
+
+    void fileSaved();
+    void fileNotSaved();
+    void setFrameRate(int newFrameRate);
+    void setResolution(int newResolution);
     void addFrame();
     void duplicateFrame(int index);
     void removeFrame(int index);
-    QVector<Frame*> getFrames() const;
+
 
 private:
     //Tool selectedTool;
