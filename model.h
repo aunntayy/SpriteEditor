@@ -25,6 +25,7 @@ private:
     int resolution;
     int frameRate;
     QVector<Frame*> frameList;
+    bool isSaved;
 
 signals:
     void updateFrameList();

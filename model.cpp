@@ -4,6 +4,8 @@
 
 Model::Model(QObject *parent) : QObject(parent)
 {
+    isSaved = false;
+
     addFrame();
     resolution = 128;
     frameRate = 25;
