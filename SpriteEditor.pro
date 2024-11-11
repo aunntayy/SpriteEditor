@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     canvas.cpp \
+    filemanager.cpp \
     frame.cpp \
     framepanel.cpp \
     main.cpp \
@@ -19,6 +20,7 @@ SOURCES += \
 
 HEADERS += \
     canvas.h \
+    filemanager.h \
     frame.h \
     framepanel.h \
     mainwindow.h \

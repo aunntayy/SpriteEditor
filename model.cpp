@@ -1,24 +1,49 @@
 #include "model.h"
 #include <QDebug>
+#include <QColor>
 
-Model::Model(QObject *parent) : QObject(parent) {}
+Model::Model(QObject *parent) : QObject(parent)
+{
+    addFrame();
+    resolution = 128;
+    frameRate = 25;
 
-void Model::addFrame() {
+    // default tool settings
+    //selectedTool = brush;
+    toolSize = 5;
+    toolColor = QColor(0, 0, 0);
+
+}
+
+Model::~Model()
+{
+    qDeleteAll(frameList);
+    frameList.clear();
+}
+
+
+void Model::addFrame()
+{
     frameList.append(new Frame());
     emit updateFrameList();
+    //selectedFrame =       // need to set selected frame to this new frame
     qDebug() << "Frame added. Total frames:" << frameList.size();
 }
 
-void Model::duplicateFrame(int index) {
-    if (index >= 0 && index < frameList.size()) {
-         frameList.insert(index + 1, new Frame(*frameList[index]));
+void Model::duplicateFrame(int index)
+{
+    if (index >= 0 && index < frameList.size())
+    {
+        frameList.insert(index + 1, new Frame(*frameList[index]));
         qDebug() << "Frame duplicated at index" << index << ". Total frames:" << frameList.size();
         emit updateFrameList();
     }
 }
 
-void Model::removeFrame(int index) {
-    if (index >= 0 && index < frameList.size()) {
+void Model::removeFrame(int index)
+{
+    if (index >= 0 && index < frameList.size())
+    {
         delete frameList[index];
         frameList.removeAt(index);
         qDebug() << "Frame removed at index" << index << ". Total frames:" << frameList.size();
@@ -26,6 +51,7 @@ void Model::removeFrame(int index) {
     }
 }
 
-QVector<Frame*> Model::getFrames() const {
+QVector<Frame*> Model::getFrames() const
+{
     return frameList;
 }

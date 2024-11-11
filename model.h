@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QVector>
+#include <QColor>
 #include "frame.h"
 
 class Model : public QObject {
@@ -10,16 +11,24 @@ class Model : public QObject {
 
 public:
     Model(QObject *parent = nullptr);
+    ~Model();
     void addFrame();
     void duplicateFrame(int index);
     void removeFrame(int index);
     QVector<Frame*> getFrames() const;
 
+private:
+    //Tool selectedTool;
+    int toolSize;
+    QColor toolColor;
+    int selectedFrame;
+    int resolution;
+    int frameRate;
+    QVector<Frame*> frameList;
+
 signals:
     void updateFrameList();
 
-private:
-    QVector<Frame*> frameList;
 };
 
 #endif // MODEL_H
