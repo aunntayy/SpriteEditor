@@ -273,11 +273,20 @@ MainWindow::MainWindow(QWidget *parent)
 
     // update color based on slider
     connect(redSlider, &QSlider::valueChanged, this,
+            &MainWindow::sendColorToEditor);
+    connect(greenSlider, &QSlider::valueChanged, this,
+            &MainWindow::sendColorToEditor);
+    connect(blueSlider, &QSlider::valueChanged, this,
+            &MainWindow::sendColorToEditor);
+
+    connect(redSlider, &QSlider::valueChanged, this,
             &MainWindow::updateColorOnSlider);
     connect(greenSlider, &QSlider::valueChanged, this,
             &MainWindow::updateColorOnSlider);
     connect(blueSlider, &QSlider::valueChanged, this,
             &MainWindow::updateColorOnSlider);
+
+
     updateColorOnSlider();
 
     // update color based on hex code
@@ -415,9 +424,17 @@ void MainWindow::updateColorCustomPalette(){
             hexLineEdit->setText(color.name());
         }
     }
-
-
 }
+
+void MainWindow::sendColorToEditor() {
+    int redValue = redSlider->value();
+    int greenValue = greenSlider->value();
+    int blueValue = blueSlider->value();
+
+    QColor color(redValue, greenValue, blueValue);
+    editor->setBrushColor(color);
+}
+
 
 MainWindow::~MainWindow()
 {

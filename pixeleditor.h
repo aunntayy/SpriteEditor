@@ -30,7 +30,7 @@ public:
     void drawPixel(int x, int y, QColor color);
     void erasePixel(int x, int y, QColor color);
     void fillColor(int x, int y, QColor color);
-
+    void setBrushColor(const QColor &color);
 public slots:
     void drawWithCurrTool(QPoint point, QColor color);
 
@@ -39,6 +39,7 @@ private:
     Tools currentTool;
     int pixelSize;
     Canvas* canvasInstance;
+    QColor currentBrushColor;
 };
 
 #endif // PIXELEDITOR_H

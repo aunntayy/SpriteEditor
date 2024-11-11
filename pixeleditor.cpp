@@ -22,18 +22,18 @@ int pixelEditor::setPixelSize(int size){
     qDebug() << "Tool set to:" << pixelSize;
 }
 
-void pixelEditor::drawWithCurrTool(QPoint point, QColor color) {
+void pixelEditor::drawWithCurrTool(QPoint point) {
 
     qDebug() << "Drawing at" << point << "using tool" << currentTool;
     // Brush tool
     if (currentTool == 1) {
-        drawPixel(point.x(), point.y(), color);
+        drawPixel(point.x(), point.y(), currentBrushColor);
     }
     if (currentTool == 2) {
-        erasePixel(point.x(), point.y(), color);
+        erasePixel(point.x(), point.y(), currentBrushColor);
     }
     if (currentTool == 3) {
-        fillColor(point.x(), point.y(), color);
+        fillColor(point.x(), point.y(), currentBrushColor);
     }
 }
 
@@ -45,7 +45,7 @@ void pixelEditor::drawPixel(int x, int y, QColor color) {
 
         QPainter painter(&canvasInstance->image);
         painter.setPen(Qt::NoPen); // Set no border
-        painter.setBrush(QBrush(Qt::red)); // Test color for now
+        painter.setBrush(currentBrushColor); // Test color for now
 
         // Draw rect
         painter.drawRect(gridX, gridY, pixelSize, pixelSize);
@@ -105,4 +105,9 @@ void pixelEditor::fillColor(int x, int y, QColor color){
     }
 
     canvasInstance->update();
+}
+
+void pixelEditor::setBrushColor(const QColor &color) {
+    currentBrushColor = color;
+    qDebug() << "Brush color set to:" << currentBrushColor.name();
 }
