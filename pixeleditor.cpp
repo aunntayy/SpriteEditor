@@ -52,7 +52,7 @@ void pixelEditor::drawPixel(int x, int y, QColor color) {
 
         QPainter painter(&canvasInstance->image);
         painter.setPen(Qt::NoPen); // Set no border
-        painter.setBrush(currentBrushColor); // Test color for now
+        painter.setBrush(currentBrushColor);
 
         // Draw rect
         painter.drawRect(gridX, gridY, pixelSize, pixelSize);
@@ -83,30 +83,29 @@ void pixelEditor::erasePixel(int x, int y, QColor color) {
     }
 }
 
-void pixelEditor::fillColor(int x, int y, QColor color){
-    // Getting the image maybe ???
-    QImage& image = canvasInstance->image;
-    if (x < 0 || y < 0 || x >= image.width() || y >= image.height()) {
-        return; // Out of bounds check
-        qDebug() <<"Out of bound";
-    }
+void pixelEditor::fillColor(int x, int y, QColor color) {
+    // take the current image object to modify directly
+    QImage& currImage = canvasInstance->image;
+    // get the clicked spot color
+    QColor targetAreaColor = currImage.pixelColor(x, y);
 
+    // If the fill color is the same color with the area that need to be fill
+    if (targetAreaColor == color) {
+        qDebug() <<"infinite loop prevented";
+        return; // Prevent infinite loop if the target color is the same as the fill color
+    }
+    // Have a stack and put all the points in
     QStack<QPoint> points;
     points.push(QPoint(x, y));
-    // Algo for fill isnt working
+    // Fill Algo
     while (!points.isEmpty()) {
         QPoint currentPoint = points.pop();
         int cx = currentPoint.x();
         int cy = currentPoint.y();
+        // Condition to fill all the points that is not the same color with the brush color
+        if (currImage.pixelColor(cx, cy) == targetAreaColor) {
+            currImage.setPixelColor(cx, cy, currentBrushColor);
 
-        if (cx < 0 || cy < 0 || cx >= image.width() || cy >= image.height()) {
-            continue; // Skip out-of-bounds points
-        }
-
-        if (image.pixelColor(cx, cy) == Qt::red) {
-            image.setPixelColor(cx, cy, Qt::red);
-
-            // Color the neighboor point
             points.push(QPoint(cx + 1, cy));
             points.push(QPoint(cx - 1, cy));
             points.push(QPoint(cx, cy + 1));
@@ -116,6 +115,7 @@ void pixelEditor::fillColor(int x, int y, QColor color){
 
     canvasInstance->update();
 }
+
 
 void pixelEditor::setBrushColor(const QColor &color) {
     currentBrushColor = color;

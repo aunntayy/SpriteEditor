@@ -168,13 +168,14 @@ MainWindow::MainWindow(QWidget *parent)
     QActionGroup* toolGroup = new QActionGroup(this);
     toolGroup->setExclusive(true); // Only one action can be checked at a time
 
-    // Checkable actions for Brush, Erase, and Fill with icons
+    // --++Checkable actions for Brush, Erase, and Fill with icons++--
 
     // brush size slider
     QSlider* brushSizeSlider = new QSlider(Qt::Horizontal, this);
     brushSizeSlider->setFixedWidth(100);
     QVector<int> brushSize = {20, 40, 60, 80, 100}; // adjust brush size here
     brushSizeSlider->setRange(0, 4); // 4 different brush size
+
     // set default starting slider to 20px
     brushSizeSlider->setValue(0);
     editor->setPixelSize(brushSize[0]);
@@ -185,6 +186,8 @@ MainWindow::MainWindow(QWidget *parent)
     brushAction->setCheckable(true);
     toolGroup->addAction(brushAction);
     toolBar->addAction(brushAction);
+    // set default brush color to black
+    editor->setBrushColor(Qt::black);
 
     // erase button
     QAction* eraseAction = new QAction(QIcon(":/img/img/erase.png"), "Erase", this);
@@ -236,6 +239,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // set icon size here
     toolBar->setIconSize(QSize(32, 32));
+    // --++End of checkable actions for Brush, Erase, and Fill with icons++--
+
 
     panel->setFixedWidth(350);
     QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);

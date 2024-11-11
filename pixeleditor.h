@@ -1,6 +1,5 @@
 #ifndef PIXELEDITOR_H
 #define PIXELEDITOR_H
-
 #include <QObject>
 #include<QColor>
 #include <QPoint>
@@ -16,7 +15,7 @@ public:
     explicit pixelEditor(QObject* parent = nullptr);
 
     void setCanvasInstance(Canvas* canvas);
-    // Add in more tool after undo to keep the order right
+    // Add in more tool after the last to keep the order right
     enum Tools {
         none,
         Brush,
