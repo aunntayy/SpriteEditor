@@ -7,24 +7,41 @@
 
 
 #include "filemanager.h"
-#include <QDebug>
 
 FileManager::FileManager() {}
 
-bool FileManager::save()
+bool FileManager::saveToFile(const Model &model)
 {
     qDebug() << "save button clicked";
+    //showSaveDialog();
 
-    // handle save confirmations/warnings
-    //serialize()
-    showSaveDialog();
+
+    QString fileName = QFileDialog::getSaveFileName(nullptr, "Save File", "", "JSON Files (*.json);;All Files (*)");
+
+    if (fileName.isEmpty()) { return false; } // file dialog cancelled
+
+    QFile file(fileName);
+    if (file.open(QIODevice::WriteOnly))
+    {
+        QJsonDocument document(writeJSON());
+        QByteArray byteArray = document.toJson();
+
+        file.write(byteArray);
+        file.close();
+    }
+    else
+    {
+        qWarning() << "Error occurred when writing to the file:" << file.errorString();
+    }
+
     return true;
 }
 
 //bool FileManager::load(bool isCurrentFileSaved
-bool FileManager::load()
+bool FileManager::loadFromFile(const Model &model)
 {
     qDebug() << "load button clicked";
+
 
     //if (!isCurrentFileSaved)
     if (true)
@@ -37,21 +54,27 @@ bool FileManager::load()
     return true;
 }
 
-bool FileManager::serialize()
+QJsonObject FileManager::writeJSON(const Model &model)
 {
-    // serialize
-    // save
+    QJsonObject json;
 
-    return true;
+    json.insert("frameRate", model.getFrameRate());
+    json.insert("resolution", model.getResolution());
+
+    QJsonArray frameArray;
+    for (Frame* frame : model.getFrames())
+    {
+        QJsonObject frameObj;
+        frameArray.append(frameObj);
+    }
+    json.insert("frames", frameArray);
+
+    // possibly save customized color palette as well
 }
 
-bool FileManager::deserialize()
+void FileManager::readJSON()
 {
-    // deserialize
-    // validate
-    // load
 
-    return true;
 }
 
 QString FileManager::showSaveDialog()
@@ -71,17 +94,3 @@ bool FileManager::confirmSave()
     return QMessageBox::question(nullptr, "Confirm Save", "The current project is unsaved. Do you want to save this file?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes;
 }
 
-
-// slots
-
-void FileManager::onSaveButtonClicked()
-{
-    save();
-}
-
-//void FileManager::onLoadButtonClicked(bool isCurrentFileSaved)
-void FileManager::onLoadButtonClicked()
-{
-    //load(isCurrentFileSaved);
-    load();
-}

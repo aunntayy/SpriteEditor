@@ -13,8 +13,16 @@ int main(int argc, char *argv[])
     Model model;
     FileManager fileManager;
 
-    QObject::connect(w.saveButton, &QAction::triggered, &fileManager, &FileManager::onSaveButtonClicked);
-    QObject::connect(w.loadButton, &QAction::triggered, &fileManager, &FileManager::onLoadButtonClicked);
+    //QObject::connect(w.saveButton, &QAction::triggered, &fileManager, &FileManager::onSaveButtonClicked);
+    //QObject::connect(w.loadButton, &QAction::triggered, &fileManager, &FileManager::onLoadButtonClicked);
+
+    QObject::connect(w.saveButton, &QAction::triggered, [&fileManager, &model]() {
+        fileManager.saveToFile(model);
+    });
+
+    QObject::connect(w.loadButton, &QAction::triggered, [&fileManager, &model]() {
+        fileManager.loadFromFile(model);
+    });
 
     w.show();
     return a.exec();

@@ -4,7 +4,12 @@
 #include <QFileDialog>
 #include <QObject>
 #include <QMessageBox>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 #include "Model.h"
+
+#include <QDebug>
 
 class FileManager : public QObject
 {
@@ -14,17 +19,6 @@ public:
 
     FileManager();
 
-    /**
-     * @brief Saves a serialized model.
-     */
-    bool save();
-
-    /**
-     * @brief Loads a deserialized file.
-     */
-    //bool load(bool isCurrentFileSaved);
-    bool load();
-
 private:
 
     /**
@@ -32,10 +26,14 @@ private:
      */
     bool serialize();
 
+    QJsonObject writeJSON();
+
     /**
      * @brief Deserializes a file.
      */
     bool deserialize();
+
+    void readJSON();
 
     /**
      * @brief Show a dialog to save a file
@@ -55,10 +53,17 @@ private:
 
 
 public slots:
-    void onSaveButtonClicked();
 
-    //void onLoadButtonClicked(bool isCurrentFileSaved);
-    void onLoadButtonClicked();
+    /**
+     * @brief Saves a serialized model.
+     */
+    bool saveToFile(const Model &model);
+
+    /**
+     * @brief Loads a deserialized file.
+     */
+    //bool load(bool isCurrentFileSaved);
+    bool loadFromFile(const Model &model);
 
 };
 
