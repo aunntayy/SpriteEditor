@@ -161,9 +161,6 @@ MainWindow::MainWindow(QWidget *parent)
     // panel
     QDockWidget *panel = new QDockWidget("Panel", this);
 
-
-
-
     toolBar->setStyleSheet("background-color: rgb(100, 100, 100);"); //change color
 
 
@@ -240,9 +237,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Add a separator between the move and undo buttons
     toolBar->addSeparator();
-
-
-
 
 
     // undo button

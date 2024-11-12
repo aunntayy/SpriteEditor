@@ -31,6 +31,8 @@ FramePanel::FramePanel(Model *model, QWidget *parent)
 
     mainLayout->addLayout(buttonLayout);
     connect(model, &Model::updateFrameList, this, &FramePanel::updateFrameList);
+
+    onAddFrame();
 }
 
 void FramePanel::onAddFrame() {
