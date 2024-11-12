@@ -131,7 +131,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // window setup
     this->setWindowTitle("CS3505 Sprite Editor");
-    this->setFixedSize(1200, 900);
+    this->setFixedSize(1200, 700);
     this->move(250, 50);
     this->setStatusBar(nullptr);
 

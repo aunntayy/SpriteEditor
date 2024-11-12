@@ -19,7 +19,7 @@ Model::~Model() {
 }
 
 void Model::addFrame() {
-    Frame* newFrame = new Frame(500, 500);  // Assuming default size of 500x500
+    Frame* newFrame = new Frame(800, 800);
     frameList.append(newFrame);
     currentFrameIndex = frameList.size() - 1;
     emit updateFrameList();
