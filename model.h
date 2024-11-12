@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QVector>
 #include <QColor>
+#include <QPixmap>
 #include "frame.h"
 
 class Model : public QObject
@@ -29,14 +30,17 @@ public:
 
 
 private:
-    //Tool selectedTool;
+    //Tools selectedTool;
     int toolSize;
     QColor toolColor;
     int selectedFrame;
     int resolution;
     int frameRate;
-    QVector<Frame*> frameList;
     bool isSaved;
+
+    QVector<Frame*> frameList;     // need to delete
+    QVector<QPixmap> framesPixmap; // for displaying (preview and frames tab)
+    QVector<QImage> framesImage;   // for the canvas
 
 signals:
     void updateFrameList();

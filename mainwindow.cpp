@@ -4,6 +4,7 @@
 
 #include "model.h"
 #include "framepanel.h"
+#include "previewer.h"
 #include "canvas.h"
 
 #include <QToolBar>
@@ -169,6 +170,9 @@ MainWindow::MainWindow(QWidget *parent)
     // panel
     QDockWidget *panel = new QDockWidget("Panel", this);
 
+
+
+
     toolBar->setStyleSheet("background-color: rgb(100, 100, 100);"); //change color
 
 
@@ -313,7 +317,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // panel - layout to hold previewer and tabs
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
 
     // panel container
     QWidget* panelContainer = new QWidget();
@@ -321,9 +325,8 @@ MainWindow::MainWindow(QWidget *parent)
     panel->setWidget(panelContainer);
 
     // preview area
-    QWidget* previewer = new QWidget();
-    previewer->setFixedHeight(325);
-    previewer->setStyleSheet("background-color: rgb(200, 200, 200);");
+    Previewer* previewer = new Previewer();
+
 
     // FramePanel - setup for managing frames
     framePanel = new FramePanel(model, this);  // Instantiate FramePanel with Model

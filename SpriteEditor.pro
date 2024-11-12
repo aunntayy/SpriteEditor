@@ -16,7 +16,8 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     model.cpp \
-    pixeleditor.cpp
+    pixeleditor.cpp \
+    previewer.cpp
 
 HEADERS += \
     canvas.h \
@@ -25,7 +26,8 @@ HEADERS += \
     framepanel.h \
     mainwindow.h \
     model.h \
-    pixeleditor.h
+    pixeleditor.h \
+    previewer.h
 
 FORMS += \
     mainwindow.ui
