@@ -201,8 +201,14 @@ MainWindow::MainWindow(QWidget *parent)
     toolGroup->addAction(fillAction);
     toolBar->addAction(fillAction);
 
+    // move button
+    QAction* moveAction = new QAction(QIcon(":/img/img/move.png"), "Move", this);
+    moveAction->setCheckable(true);
+    toolGroup->addAction(moveAction);
+    toolBar->addAction(moveAction);
+
     // connect actions to setTool
-    connect(brushSizeSlider, &QSlider::valueChanged, [=](int index) {
+    connect(brushSizeSlider, &QSlider::valueChanged, this, [=](int index) {
         editor->setPixelSize(brushSize[index]);
         qDebug() << "Current brush size:" << brushSize[index];
     });
@@ -216,14 +222,17 @@ MainWindow::MainWindow(QWidget *parent)
         editor->setTool(pixelEditor::Fill);
     });
 
+    connect(moveAction, &QAction::triggered, this, [=]() {
+        editor->setTool(pixelEditor::Move);
+        editor->drawWithCurrTool(QPoint());
+    });
+
     // Add a separator between the move and undo buttons
     toolBar->addSeparator();
 
-    // move button
-    QAction* moveAction = new QAction(QIcon(":/img/img/move.png"), "Move", this);
-    moveAction->setCheckable(true);
-    toolGroup->addAction(moveAction);
-    toolBar->addAction(moveAction);
+
+
+
 
     // undo button
     QAction* undoAction = new QAction(QIcon(":/img/img/undo.png"), "Undo", this);
@@ -231,9 +240,9 @@ MainWindow::MainWindow(QWidget *parent)
     toolGroup->addAction(undoAction);
     toolBar->addAction(undoAction);
 
-    connect(undoAction, &QAction::triggered, [=]() {
+    connect(undoAction, &QAction::triggered, this, [=]() {
         editor->setTool(pixelEditor::Undo);
-        editor->drawWithCurrTool(QPoint(), QColor());
+        editor->drawWithCurrTool(QPoint());
     });
 
 
@@ -368,9 +377,8 @@ MainWindow::MainWindow(QWidget *parent)
     // Create the Canvas instance and set it as the central widget
     int canvasWidth = 800; // Example width
     int canvasHeight = 800; // Example height
-    int pixelSize = 10; // Example pixel size
 
-    canvas = new Canvas(canvasWidth, canvasHeight, pixelSize, this);
+    canvas = new Canvas(canvasWidth, canvasHeight, this);
     qDebug() << "canvas created";
     editor->setCanvasInstance(canvas);
     setCentralWidget(canvas);

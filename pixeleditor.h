@@ -24,21 +24,22 @@ public:
         Move,
         Undo
     };
-
+    // setting up tool spec
     void setTool(Tools pickTool);
-    int setPixelSize(int size);
-
-    void drawPixel(int x, int y, QColor color);
-    void erasePixel(int x, int y, QColor color);
-    void fillColor(int x, int y, QColor color);
     void setBrushColor(const QColor &color);
+    void setPixelSize(int size);
+
+    // Editing pixel
+    void drawPixel(int x, int y);
+    void erasePixel(int x, int y);
+    void fillColor(int x, int y);
+    void movePixel(int x, int y);
 
     void addActionToHistory(int x, int y, const QColor& prevColor);
     void undoLastAction();
+
 public slots:
-    void drawWithCurrTool(QPoint point, QColor color);
-
-
+    void drawWithCurrTool(QPoint point);
 private:
     struct PixelAction {
         int x, y;
@@ -48,9 +49,12 @@ private:
     Tools currentTool;
     int pixelSize;
     Canvas* canvasInstance;
+    QVector<QPoint> drawnPixels;
+    QVector<QPoint> originalDrawnPixels;
+    QPoint startMovePoint;
+    bool isMoving;
     QColor currentBrushColor;
     QStack<PixelAction> actionHistory;
-
 };
 
 #endif // PIXELEDITOR_H

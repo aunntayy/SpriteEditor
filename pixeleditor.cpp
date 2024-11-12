@@ -6,105 +6,134 @@
 #include<QPainter>
 #include<QStack>
 
-pixelEditor::pixelEditor(QObject* parent) : QObject(parent), canvasInstance(nullptr) {}
+pixelEditor::pixelEditor(QObject* parent) : QObject(parent), canvasInstance(nullptr) {
+
+}
 
 void pixelEditor::setTool(Tools pickTool){
     currentTool = pickTool;
-
-
 }
 void pixelEditor::setCanvasInstance(Canvas* canvas) {
     canvasInstance = canvas;
 }
 
-int pixelEditor::setPixelSize(int size){
-    return pixelSize = size;
-    qDebug() << "Tool set to:" << pixelSize;
+void pixelEditor::setPixelSize(int size){
+    pixelSize = size;
 }
 
-void pixelEditor::drawWithCurrTool(QPoint point, QColor color) {
+void pixelEditor::drawWithCurrTool(QPoint point) {
+    int gridX = (point.x() / pixelSize) * pixelSize;
+    int gridY = (point.y() / pixelSize) * pixelSize;
 
-    qDebug() << "Drawing at" << point << "using tool" << currentTool;
     // Brush tool
     if (currentTool == 1) {
-        drawPixel(point.x(), point.y(), currentBrushColor);
+        drawPixel(gridX, gridY);
     }
+    // Erase tool
     if (currentTool == 2) {
-        erasePixel(point.x(), point.y(), currentBrushColor);
+        erasePixel(gridX, gridY);
     }
+    // Fill tool
     if (currentTool == 3) {
-        fillColor(point.x(), point.y(), currentBrushColor);
+        fillColor(gridX, gridY);
     }
-
+    // Move tool
+    if (currentTool == 4) {
+        if (!isMoving) {
+            startMovePoint = point;
+            originalDrawnPixels = drawnPixels;  // Capture original positions
+            isMoving = true;
+        } else {
+            // Now move since it's a move event, not just setup
+            movePixel(gridX, gridY);
+        }
+    } else {
+        isMoving = false;
+    }
     if(currentTool == 5){
         undoLastAction();
     }
 }
 
-void pixelEditor::drawPixel(int x, int y, QColor color) {
+void pixelEditor::drawPixel(int x, int y) {
     if (canvasInstance) {
-        // Get nearest grid point based on pixel size
-        int gridX = (x / pixelSize) * pixelSize;
-        int gridY = (y / pixelSize) * pixelSize;
+        QColor prevColor = canvasInstance->image.pixelColor(x, y);
+        addActionToHistory(x, y, prevColor);
 
-        QColor prevColor = canvasInstance->image.pixelColor(gridX, gridY);
-        addActionToHistory(gridX, gridY, prevColor);
+        // range check
+        if (x < 0 || x >= canvasInstance->width() || y < 0 || y >= canvasInstance->height()) {
+            return;
+        }
 
         QPainter painter(&canvasInstance->image);
         painter.setPen(Qt::NoPen); // Set no border
         painter.setBrush(currentBrushColor);
 
-        // Draw rect
-        painter.drawRect(gridX, gridY, pixelSize, pixelSize);
+        // track the draw pixel
+        QPoint newPoint(x, y);
+        drawnPixels.append(newPoint);
 
+        // Draw rect
+        painter.drawRect(x, y, pixelSize, pixelSize);
         canvasInstance->update();
-        qDebug() << "Pixel drawn at grid(" << gridX << "," << gridY << ") with color" << color << "and size" << pixelSize;
     }
 }
 
-void pixelEditor::erasePixel(int x, int y, QColor color) {
+void pixelEditor::erasePixel(int x, int y) {
     if (canvasInstance) {
-        // Get nearest grid point based on pixel size
-        int gridX = (x / pixelSize) * pixelSize;
-        int gridY = (y / pixelSize) * pixelSize;
+        QColor prevColor = canvasInstance->image.pixelColor(x, y);
+        addActionToHistory(x, y, prevColor);
 
-        QColor prevColor = canvasInstance->image.pixelColor(gridX, gridY);
-        addActionToHistory(gridX, gridY, prevColor);
+        // range check
+        if (x < 0 || x >= canvasInstance->width() || y < 0 || y >= canvasInstance->height()) {
+            return;
+        }
 
         QPainter painter(&canvasInstance->image);
         painter.setPen(Qt::NoPen);
         painter.setBrush(QBrush(Qt::white));
 
-        // Draw rect
-        painter.drawRect(gridX, gridY, pixelSize, pixelSize);
+        // Remove the erased pixel from `drawnPixels`
+        QPoint pointToErase(x, y);
+        drawnPixels.removeAll(pointToErase);
 
+        // Draw rect
+        painter.drawRect(x, y, pixelSize, pixelSize);
         canvasInstance->update();
-        qDebug() << "Pixel drawn at grid(" << gridX << "," << gridY << ") with color" << color << "and size" << pixelSize;
     }
 }
 
-void pixelEditor::fillColor(int x, int y, QColor color) {
+void pixelEditor::fillColor(int x, int y) {
     // take the current image object to modify directly
     QImage& currImage = canvasInstance->image;
     // get the clicked spot color
     QColor targetAreaColor = currImage.pixelColor(x, y);
 
-    // If the fill color is the same color with the area that need to be fill
-    if (targetAreaColor == color) {
-        qDebug() <<"infinite loop prevented";
+    // if the fill color is the same color with the area that need to be fill
+    if (targetAreaColor == currentBrushColor) {
         return; // Prevent infinite loop if the target color is the same as the fill color
     }
-    // Have a stack and put all the points in
+    // have a stack and put all the points in
     QStack<QPoint> points;
     points.push(QPoint(x, y));
-    // Fill Algo
+    // fill Algo
     while (!points.isEmpty()) {
         QPoint currentPoint = points.pop();
         int cx = currentPoint.x();
         int cy = currentPoint.y();
-        // Condition to fill all the points that is not the same color with the brush color
+
+        // range check
+        if (cx < 0 || cx >= canvasInstance->width() || cy < 0 || cy >= canvasInstance->height()) {
+            continue;  // Skip point out of bounds
+        }
+
+        // condition to fill all the points that is not the same color with the brush color
         if (currImage.pixelColor(cx, cy) == targetAreaColor) {
             currImage.setPixelColor(cx, cy, currentBrushColor);
+
+            // Track filled pixel
+            QPoint filledPoint((cx / pixelSize) * pixelSize, (cy / pixelSize) * pixelSize);
+            drawnPixels.append(filledPoint);
 
             points.push(QPoint(cx + 1, cy));
             points.push(QPoint(cx - 1, cy));
@@ -116,23 +145,46 @@ void pixelEditor::fillColor(int x, int y, QColor color) {
     canvasInstance->update();
 }
 
+void pixelEditor::movePixel(int x, int y) {
+    if (!canvasInstance || !isMoving) return;
+
+    int dx = x - startMovePoint.x();
+    int dy = y - startMovePoint.y();
+
+    // Clear canvas to prepare for redrawing
+    canvasInstance->image.fill(Qt::white);  // Fill with background color
+
+    QPainter painter(&canvasInstance->image);
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(currentBrushColor);
+
+    // Move and redraw each pixel from originalDrawnPixels
+    drawnPixels.clear();  // Clear drawnPixels to store new positions
+    for (const QPoint &originalPoint : originalDrawnPixels) {
+        QPoint newPoint = originalPoint + QPoint(dx, dy);  // Apply offset
+
+        // Draw at the new position
+        painter.drawRect(newPoint.x(), newPoint.y(), pixelSize, pixelSize);
+
+        // Track new position
+        drawnPixels.append(newPoint);
+    }
+
+    // Update canvas with moved pixels
+    canvasInstance->update();
+}
 
 void pixelEditor::setBrushColor(const QColor &color) {
     currentBrushColor = color;
-    qDebug() << "Brush color set to:" << currentBrushColor.name();
 }
 
 void pixelEditor::addActionToHistory(int x, int y, const QColor& prevColor){
-    qDebug() << "Adding action to history:" << "X:" << x << "Y:" << y << "PrevColor:" << prevColor.name();
     actionHistory.push({x,y,prevColor});
 }
 
 void pixelEditor::undoLastAction() {
     if (actionHistory.isEmpty() || !canvasInstance) return;
     PixelAction lastAction = actionHistory.pop();
-    qDebug() << "Undoing last action at X:" << lastAction.x << "Y:" << lastAction.y << "PrevColor:" << lastAction.prevColor.name();
-
-
     QImage& image = canvasInstance->image;
     image.setPixelColor(lastAction.x, lastAction.y, lastAction.prevColor);
 
