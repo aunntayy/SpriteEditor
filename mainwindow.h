@@ -53,6 +53,7 @@ private slots:
     void updateColorOnSlider();
     void updateColorOnHexCode();
     void updateColorCustomPalette();
+    void sendColorToEditor();
 
 signals:
     void saveButtonClicked();

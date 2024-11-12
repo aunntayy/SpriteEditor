@@ -16,15 +16,15 @@ void Canvas::paintEvent(QPaintEvent* event) {
 
 void Canvas::mousePressEvent(QMouseEvent* mouseEvent) {
     if (mouseEvent->button() == Qt::LeftButton) {
-        lastPoint = mouseEvent->pos();
-        emit mousePressCanvas(lastPoint, brushColor);
+        lastPoint = mouseEvent->pos;
+        emit mousePressCanvas(lastPoint);
     }
 }
 
 void Canvas::mouseMoveEvent(QMouseEvent* mouseEvent) {
     if (mouseEvent->buttons() & Qt::LeftButton) {
         lastPoint = mouseEvent->pos();
-        emit mousePressCanvas(lastPoint, brushColor);
+        emit mousePressCanvas(lastPoint);
         update();
         emit sendCurrentImage(image);  // Emit the updated image
     }

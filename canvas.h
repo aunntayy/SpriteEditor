@@ -11,13 +11,13 @@ class Canvas : public QWidget{
     Q_OBJECT
 
 public:
-    explicit Canvas(int width, int height, int pixelSize, QWidget* parent = nullptr);
+    explicit Canvas(int width, int height, int pixelSize, QWidget* parent = nullptr)
     QImage image;
     QPoint lastPoint;
     QColor brushColor;
 
 signals:
-    void mousePressCanvas(QPoint point, QColor color);
+    void mousePressCanvas(QPoint point);
     void sendCurrentImage(const QImage& img);
 
 public slots:
