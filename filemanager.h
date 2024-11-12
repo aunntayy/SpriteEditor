@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QByteArray>
 #include "Model.h"
 
 #include <QDebug>
@@ -21,19 +22,9 @@ public:
 
 private:
 
-    /**
-     * @brief Serializes a model.
-     */
-    bool serialize();
+    QJsonObject writeJson(const Model &model);
 
-    QJsonObject writeJSON();
-
-    /**
-     * @brief Deserializes a file.
-     */
-    bool deserialize();
-
-    void readJSON();
+    Model* readJson(const QJsonObject &json);
 
     /**
      * @brief Show a dialog to save a file
@@ -57,13 +48,12 @@ public slots:
     /**
      * @brief Saves a serialized model.
      */
-    bool saveToFile(const Model &model);
+    void saveToFile(const Model &model);
 
     /**
      * @brief Loads a deserialized file.
      */
-    //bool load(bool isCurrentFileSaved);
-    bool loadFromFile(const Model &model);
+    Model* loadFromFile(const Model &model);
 
 };
 

@@ -1,7 +1,6 @@
 /**
  * NOTES:
  *
- *  - need to get isFileSaved from Model
  *
  */
 
@@ -10,20 +9,19 @@
 
 FileManager::FileManager() {}
 
-bool FileManager::saveToFile(const Model &model)
+void FileManager::saveToFile(const Model &model)
 {
     qDebug() << "save button clicked";
-    //showSaveDialog();
 
 
-    QString fileName = QFileDialog::getSaveFileName(nullptr, "Save File", "", "JSON Files (*.json);;All Files (*)");
+    QString fileName = showSaveDialog();
 
-    if (fileName.isEmpty()) { return false; } // file dialog cancelled
+    if (fileName.isEmpty()) { /* show a warning */ } // file dialog cancelled
 
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly))
     {
-        QJsonDocument document(writeJSON());
+        QJsonDocument document(writeJson(model));
         QByteArray byteArray = document.toJson();
 
         file.write(byteArray);
@@ -34,27 +32,49 @@ bool FileManager::saveToFile(const Model &model)
         qWarning() << "Error occurred when writing to the file:" << file.errorString();
     }
 
-    return true;
+    // need to set file isSaved to true
 }
 
-//bool FileManager::load(bool isCurrentFileSaved
-bool FileManager::loadFromFile(const Model &model)
+Model* FileManager::loadFromFile(const Model &model)
 {
     qDebug() << "load button clicked";
 
 
-    //if (!isCurrentFileSaved)
-    if (true)
+    if (!model.isFileSaved())
     {
         if(confirmSave() == true) { showSaveDialog(); }
     }
 
-    //deserialize()
-    showOpenDialog();
-    return true;
+    QString filePath = showOpenDialog();
+    if (filePath.isEmpty())              // case user cancelled
+    {
+        Model* newModel = new Model();
+        return newModel;
+    }
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly)) // case error opening file
+    {
+        QMessageBox::warning(nullptr, "Load Error", "Could not open the file for reading.");
+        Model* newModel = new Model();
+        return newModel;
+    }
+
+    QByteArray fileData = file.readAll();
+    QJsonDocument document = QJsonDocument::fromJson(fileData);
+    file.close();
+
+    if (document.isNull())               // case bad json
+    {
+        QMessageBox::warning(nullptr, "Parse Error", "Failed to parse the JSON file.");
+        Model* newModel = new Model();
+        return newModel;
+    }
+
+    return readJson(document.object());
 }
 
-QJsonObject FileManager::writeJSON(const Model &model)
+QJsonObject FileManager::writeJson(const Model &model)
 {
     QJsonObject json;
 
@@ -70,22 +90,42 @@ QJsonObject FileManager::writeJSON(const Model &model)
     json.insert("frames", frameArray);
 
     // possibly save customized color palette as well
+
+    return json;
 }
 
-void FileManager::readJSON()
+Model* FileManager::readJson(const QJsonObject &json)
 {
+    Model* model = new Model();
 
+    model->setFrameRate(json["frameRate"].toInt());
+    model->setResolution(json["resolution"].toInt());
+
+    QJsonArray frameArray = json["frames"].toArray();
+    QVector<Frame*> frameList;
+    for (const QJsonValue &value : frameArray)
+    {
+        QJsonObject frameObj = value.toObject(); // deserialize frame object from JSON
+        Frame* frame = new Frame();              // make a constructor that accepts JSON object?
+        frameList.append(frame);
+    }
+
+    //model.frameList = frames; // need to be a friend or iterate
+
+    // possibly load customized color palette as well
+
+    return model;
 }
 
 QString FileManager::showSaveDialog()
 {
-    return QFileDialog::getSaveFileName(nullptr, "Save Sprite Project", "", "Sprite Editor File (*.sef);;All Files (*)");
+    return QFileDialog::getSaveFileName(nullptr, "Save Sprite Project", "", "JSON Files (*.json);;All Files (*)");
 }
 
 
 QString FileManager::showOpenDialog()
 {
-    return QFileDialog::getOpenFileName(nullptr, "Open Sprite Project", "", "Sprite Editor File (*.sef);;All Files (*)");
+    return QFileDialog::getOpenFileName(nullptr, "Open Sprite Project", "", "JSON Files (*.json);;All Files (*)");
 }
 
 
