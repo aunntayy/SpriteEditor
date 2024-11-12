@@ -4,7 +4,6 @@
 
 #include "model.h"
 #include "framepanel.h"
-#include "previewer.h"
 #include "canvas.h"
 
 #include <QToolBar>
@@ -139,15 +138,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Instantiate the model
     model = new Model(this);
-    // Canvas setup
-    // Create the Canvas instance and set it as the central widget
-    int canvasWidth = 500; // Example width
-    int canvasHeight = 500; // Example height
-    int pixelSize = 10; // Example pixel size
 
-    canvas = new Canvas(editor, canvasWidth, canvasHeight, pixelSize, this);
-    qDebug() << "canvas created";
-    setCentralWidget(canvas);
 
 
     // toolbar
@@ -156,7 +147,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     toolBar->setStyleSheet(
         "background-color: rgb(100, 100, 100);"); // change color
-    QAction* action1 = new QAction("File Stuff", this);
+    QAction *action1 = new QAction("File Stuff", this);
     saveButton = new QAction("Save", this);
     loadButton = new QAction("Load", this);
     toolBar->addAction(action1);
@@ -187,20 +178,18 @@ MainWindow::MainWindow(QWidget *parent)
     QActionGroup* toolGroup = new QActionGroup(this);
     toolGroup->setExclusive(true); // Only one action can be checked at a time
 
-    // Checkable actions for Color Picker, Brush, Erase, and Fill with icons
-
-    // color picker button
-    QAction* colorPickerAction = new QAction(QIcon(""), "Color", this);
-    colorPickerAction->setCheckable(true);
-    toolGroup->addAction(colorPickerAction);
-    toolBar->addAction(colorPickerAction);
-
+    // --++Checkable actions for Brush, Erase, and Fill with icons++--
 
     // brush size slider
     QSlider* brushSizeSlider = new QSlider(Qt::Horizontal, this);
-    brushSizeSlider->setFixedWidth(150);
-    brushSizeSlider->setRange(1, 10); // Brush size range from 1 to 100
-    brushSizeSlider->setValue(10); // Default value
+
+    brushSizeSlider->setFixedWidth(100);
+    QVector<int> brushSize = {20, 40, 60, 80, 100}; // adjust brush size here
+    brushSizeSlider->setRange(0, 4); // 4 different brush size
+
+    // set default starting slider to 20px
+    brushSizeSlider->setValue(0);
+    editor->setPixelSize(brushSize[0]);
     toolBar->addWidget(brushSizeSlider);
 
     // brush button
@@ -208,6 +197,8 @@ MainWindow::MainWindow(QWidget *parent)
     brushAction->setCheckable(true);
     toolGroup->addAction(brushAction);
     toolBar->addAction(brushAction);
+    // set default brush color to black
+    editor->setBrushColor(Qt::black);
 
     // erase button
     QAction* eraseAction = new QAction(QIcon(":/img/img/erase.png"), "Erase", this);
@@ -221,10 +212,16 @@ MainWindow::MainWindow(QWidget *parent)
     toolGroup->addAction(fillAction);
     toolBar->addAction(fillAction);
 
+    // move button
+    QAction* moveAction = new QAction(QIcon(":/img/img/move.png"), "Move", this);
+    moveAction->setCheckable(true);
+    toolGroup->addAction(moveAction);
+    toolBar->addAction(moveAction);
+
     // connect actions to setTool
-    connect(brushSizeSlider, &QSlider::valueChanged, this, [=](int value) {
-        editor->setToolSize(value);
-        qDebug() << "Brush size set to:" << value;
+    connect(brushSizeSlider, &QSlider::valueChanged, this, [=](int index) {
+        editor->setPixelSize(brushSize[index]);
+        qDebug() << "Current brush size:" << brushSize[index];
     });
     connect(brushAction, &QAction::triggered, this, [=]() {
         editor->setTool(pixelEditor::Brush);
@@ -236,14 +233,17 @@ MainWindow::MainWindow(QWidget *parent)
         editor->setTool(pixelEditor::Fill);
     });
 
+    connect(moveAction, &QAction::triggered, this, [=]() {
+        editor->setTool(pixelEditor::Move);
+        editor->drawWithCurrTool(QPoint());
+    });
+
     // Add a separator between the move and undo buttons
     toolBar->addSeparator();
 
-    // move button
-    QAction* moveAction = new QAction(QIcon(":/img/img/move.png"), "Move", this);
-    moveAction->setCheckable(true);
-    toolGroup->addAction(moveAction);
-    toolBar->addAction(moveAction);
+
+
+
 
     // undo button
     QAction* undoAction = new QAction(QIcon(":/img/img/undo.png"), "Undo", this);
@@ -251,8 +251,16 @@ MainWindow::MainWindow(QWidget *parent)
     toolGroup->addAction(undoAction);
     toolBar->addAction(undoAction);
 
+    connect(undoAction, &QAction::triggered, this, [=]() {
+        editor->setTool(pixelEditor::Undo);
+        editor->drawWithCurrTool(QPoint());
+    });
+
+
     // set icon size here
     toolBar->setIconSize(QSize(32, 32));
+    // --++End of checkable actions for Brush, Erase, and Fill with icons++--
+
 
     panel->setFixedWidth(350);
     QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -296,11 +304,20 @@ MainWindow::MainWindow(QWidget *parent)
 
     // update color based on slider
     connect(redSlider, &QSlider::valueChanged, this,
+            &MainWindow::sendColorToEditor);
+    connect(greenSlider, &QSlider::valueChanged, this,
+            &MainWindow::sendColorToEditor);
+    connect(blueSlider, &QSlider::valueChanged, this,
+            &MainWindow::sendColorToEditor);
+
+    connect(redSlider, &QSlider::valueChanged, this,
             &MainWindow::updateColorOnSlider);
     connect(greenSlider, &QSlider::valueChanged, this,
             &MainWindow::updateColorOnSlider);
     connect(blueSlider, &QSlider::valueChanged, this,
             &MainWindow::updateColorOnSlider);
+
+
     updateColorOnSlider();
 
     // update color based on hex code
@@ -317,7 +334,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // panel - layout to hold previewer and tabs
-    QVBoxLayout* layout = new QVBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout();
 
     // panel container
     QWidget* panelContainer = new QWidget();
@@ -325,8 +342,9 @@ MainWindow::MainWindow(QWidget *parent)
     panel->setWidget(panelContainer);
 
     // preview area
-    Previewer* previewer = new Previewer();
-
+    QWidget* previewer = new QWidget();
+    previewer->setFixedHeight(325);
+    previewer->setStyleSheet("background-color: rgb(200, 200, 200);");
 
     // FramePanel - setup for managing frames
     framePanel = new FramePanel(model, this);  // Instantiate FramePanel with Model
@@ -366,10 +384,19 @@ MainWindow::MainWindow(QWidget *parent)
     addDockWidget(Qt::LeftDockWidgetArea, panel);
 
 
-    // canvas
-    QWidget *canvas = new QWidget();
-    canvas->setStyleSheet("background-color: rgb(0, 0, 0);");
+    // Canvas setup
+    // Create the Canvas instance and set it as the central widget
+    int canvasWidth = 800; // Example width
+    int canvasHeight = 800; // Example height
+
+    canvas = new Canvas(canvasWidth, canvasHeight, this);
+    qDebug() << "canvas created";
+    editor->setCanvasInstance(canvas);
     setCentralWidget(canvas);
+
+    connect(canvas, &Canvas::mousePressCanvas, editor, &pixelEditor::drawWithCurrTool);
+    connect(canvas, &Canvas::sendCurrentImage, model, &Model::updateCurrentFrameImage);
+    connect(model, &Model::updateDrawingPanel, framePanel, &FramePanel::updateButtonIconBasedOnFrame);
 }
 
 void MainWindow::updateColorOnSlider() {
@@ -429,15 +456,22 @@ void MainWindow::updateColorCustomPalette(){
             hexLineEdit->setText(color.name());
         }
     }
-
-
 }
+
+void MainWindow::sendColorToEditor() {
+    int redValue = redSlider->value();
+    int greenValue = greenSlider->value();
+    int blueValue = blueSlider->value();
+
+    QColor color(redValue, greenValue, blueValue);
+    editor->setBrushColor(color);
+}
+
 
 MainWindow::~MainWindow()
 {
     delete ui;
     delete editor;
     delete canvas;
-
 }
 

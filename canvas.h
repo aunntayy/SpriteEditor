@@ -3,29 +3,32 @@
 
 #include <QWidget>
 #include <QImage>
+#include <QPoint>
+#include <QColor>
+#include "frame.h"
 
-#include "pixeleditor.h"
+class Canvas : public QWidget{
+    Q_OBJECT
 
-class Canvas : public QWidget
-{ Q_OBJECT
 public:
-    explicit Canvas(pixelEditor* editor, int width, int height, int pixelSize, QWidget* parent = nullptr);
+    explicit Canvas(int width, int height, int pixelSize, QWidget* parent = nullptr)
+    QImage image;
+    QPoint lastPoint;
+    QColor brushColor;
+
+signals:
+    void mousePressCanvas(QPoint point);
+    void sendCurrentImage(const QImage& img);
+
+public slots:
+    void clear();
+    void updateFrameFromCanvas(Frame* frame);
+    void drawFromFrame(Frame* frame);
 
 protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* mouseEvent) override;
     void mouseMoveEvent(QMouseEvent* mouseEvent) override;
-    void mouseReleaseEvent(QMouseEvent* event) override;
-
-private:
-    int pixelSize;
-    QImage image;
-    QPoint lastPoint;
-    int brushSize;
-    QColor brushColor;
-    int currentTool;
-
-    pixelEditor* editor;
 };
 
 #endif // CANVAS_H
