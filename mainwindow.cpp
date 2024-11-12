@@ -4,7 +4,6 @@
 
 #include "model.h"
 #include "framepanel.h"
-#include "previewer.h"
 #include "canvas.h"
 
 #include <QToolBar>
@@ -139,15 +138,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Instantiate the model
     model = new Model(this);
-    // Canvas setup
-    // Create the Canvas instance and set it as the central widget
-    int canvasWidth = 500; // Example width
-    int canvasHeight = 500; // Example height
-    int pixelSize = 10; // Example pixel size
 
-    canvas = new Canvas(editor, canvasWidth, canvasHeight, pixelSize, this);
-    qDebug() << "canvas created";
-    setCentralWidget(canvas);
 
 
     // toolbar
@@ -156,7 +147,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     toolBar->setStyleSheet(
         "background-color: rgb(100, 100, 100);"); // change color
-    QAction* action1 = new QAction("File Stuff", this);
+    QAction *action1 = new QAction("File Stuff", this);
     saveButton = new QAction("Save", this);
     loadButton = new QAction("Load", this);
     toolBar->addAction(action1);
@@ -199,8 +190,10 @@ MainWindow::MainWindow(QWidget *parent)
     // brush size slider
     QSlider* brushSizeSlider = new QSlider(Qt::Horizontal, this);
     brushSizeSlider->setFixedWidth(150);
-    brushSizeSlider->setRange(1, 10); // Brush size range from 1 to 100
-    brushSizeSlider->setValue(10); // Default value
+    brushSizeSlider->setRange(1, 100); // Brush size range from 1 to 100
+    int defaultPixelVal = 30;
+    brushSizeSlider->setValue(defaultPixelVal);
+    editor->setPixelSize(defaultPixelVal);
     toolBar->addWidget(brushSizeSlider);
 
     // brush button
@@ -223,8 +216,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // connect actions to setTool
     connect(brushSizeSlider, &QSlider::valueChanged, this, [=](int value) {
-        editor->setToolSize(value);
-        qDebug() << "Brush size set to:" << value;
+        editor->setPixelSize(value);
+        qDebug() << "Pixel size set to:" << value;
     });
     connect(brushAction, &QAction::triggered, this, [=]() {
         editor->setTool(pixelEditor::Brush);
@@ -317,7 +310,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // panel - layout to hold previewer and tabs
-    QVBoxLayout* layout = new QVBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout();
 
     // panel container
     QWidget* panelContainer = new QWidget();
@@ -325,8 +318,9 @@ MainWindow::MainWindow(QWidget *parent)
     panel->setWidget(panelContainer);
 
     // preview area
-    Previewer* previewer = new Previewer();
-
+    QWidget* previewer = new QWidget();
+    previewer->setFixedHeight(325);
+    previewer->setStyleSheet("background-color: rgb(200, 200, 200);");
 
     // FramePanel - setup for managing frames
     framePanel = new FramePanel(model, this);  // Instantiate FramePanel with Model
@@ -366,10 +360,15 @@ MainWindow::MainWindow(QWidget *parent)
     addDockWidget(Qt::LeftDockWidgetArea, panel);
 
 
-    // canvas
-    QWidget *canvas = new QWidget();
-    canvas->setStyleSheet("background-color: rgb(0, 0, 0);");
+    // Canvas setup
+    canvas = new Canvas(800, 800, 10, this);
+    qDebug() << "canvas created";
+    editor->setCanvasInstance(canvas);
     setCentralWidget(canvas);
+
+    connect(canvas, &Canvas::mousePressCanvas, editor, &pixelEditor::drawWithCurrTool);
+    connect(canvas, &Canvas::sendCurrentImage, model, &Model::updateCurrentFrameImage);
+    connect(model, &Model::updateDrawingPanel, framePanel, &FramePanel::updateButtonIconBasedOnFrame);
 }
 
 void MainWindow::updateColorOnSlider() {
@@ -438,6 +437,5 @@ MainWindow::~MainWindow()
     delete ui;
     delete editor;
     delete canvas;
-
 }
 

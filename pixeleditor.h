@@ -2,6 +2,10 @@
 #define PIXELEDITOR_H
 
 #include <QObject>
+#include<QColor>
+#include <QPoint>
+
+class Canvas;
 
 class pixelEditor : public QObject
 {
@@ -9,6 +13,7 @@ class pixelEditor : public QObject
 public:
     explicit pixelEditor(QObject* parent = nullptr);
 
+    void setCanvasInstance(Canvas* canvas);
     enum Tools {
         ColorPicker,
         Brush,
@@ -19,13 +24,19 @@ public:
     };
 
     void setTool(Tools pickTool);
-    int setToolSize(int toolSize);
-signals:
-    void toolChanged();
-    void brushSizeChanged(int size);
+    int setPixelSize(int size);
+
+    void drawPixel(int x, int y, QColor color);
+    void erasePixel(int x, int y, QColor color);
+
+public slots:
+    void drawWithCurrTool(QPoint point, QColor color);
+
+
 private:
     Tools currentTool;
-    int currentToolSize;
+    int pixelSize;
+    Canvas* canvasInstance;
 };
 
 #endif // PIXELEDITOR_H

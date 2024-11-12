@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QLineEdit>
-#include <QObject>
 #include <QMainWindow>
 #include <QPushButton>
 #include <QSlider>
@@ -14,14 +13,12 @@
 
 
 QT_BEGIN_NAMESPACE
-namespace Ui
-{
+namespace Ui {
 class MainWindow;
 }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
@@ -32,6 +29,7 @@ public:
 
     QAction* saveButton;
     QAction* loadButton;
+
 
 private:
     Ui::MainWindow *ui;
@@ -49,6 +47,7 @@ private:
     QPushButton *brushColor;
     QMap<QPushButton*, QColor> customColors;
 
+    void connectSignals();
 
 private slots:
     void updateColorOnSlider();
@@ -58,8 +57,6 @@ private slots:
 signals:
     void saveButtonClicked();
     void loadButtonClicked();
-
- 
 
 };
 
