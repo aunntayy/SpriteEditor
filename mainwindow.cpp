@@ -148,11 +148,21 @@ MainWindow::MainWindow(QWidget *parent)
     toolBar->setStyleSheet(
         "background-color: rgb(100, 100, 100);"); // change color
     QAction *action1 = new QAction("File Stuff", this);
+    saveButton = new QAction("Save", this);
+    loadButton = new QAction("Load", this);
     toolBar->addAction(action1);
+    toolBar->addAction(saveButton);
+    toolBar->addAction(loadButton);
+
+    //connect(&saveButton, &QAction::triggered, &fileManager, &FileManager::onSaveButtonClicked());
+
 
 
     // panel
     QDockWidget *panel = new QDockWidget("Panel", this);
+
+
+
 
     toolBar->setStyleSheet("background-color: rgb(100, 100, 100);"); //change color
 
@@ -172,6 +182,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // brush size slider
     QSlider* brushSizeSlider = new QSlider(Qt::Horizontal, this);
+
     brushSizeSlider->setFixedWidth(100);
     QVector<int> brushSize = {20, 40, 60, 80, 100}; // adjust brush size here
     brushSizeSlider->setRange(0, 4); // 4 different brush size
@@ -384,6 +395,8 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(canvas);
 
     connect(canvas, &Canvas::mousePressCanvas, editor, &pixelEditor::drawWithCurrTool);
+    connect(canvas, &Canvas::sendCurrentImage, model, &Model::updateCurrentFrameImage);
+    connect(model, &Model::updateDrawingPanel, framePanel, &FramePanel::updateButtonIconBasedOnFrame);
 }
 
 void MainWindow::updateColorOnSlider() {

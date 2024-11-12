@@ -2,11 +2,9 @@
 #define PIXELEDITOR_H
 #include <QObject>
 #include<QColor>
-#include <QPoint>
+#include <QPoi
 #include <QStack>
 class Canvas;
-
-
 
 class pixelEditor : public QObject
 {
@@ -15,6 +13,7 @@ public:
     explicit pixelEditor(QObject* parent = nullptr);
 
     void setCanvasInstance(Canvas* canvas);
+    
     // Add in more tool after the last to keep the order right
     enum Tools {
         none,
@@ -40,6 +39,7 @@ public:
 
 public slots:
     void drawWithCurrTool(QPoint point);
+
 private:
     struct PixelAction {
         int x, y;
@@ -49,6 +49,7 @@ private:
     Tools currentTool;
     int pixelSize;
     Canvas* canvasInstance;
+
     QVector<QPoint> drawnPixels;
     QVector<QPoint> originalDrawnPixels;
     QPoint startMovePoint;

@@ -6,9 +6,7 @@
 #include<QPainter>
 #include<QStack>
 
-pixelEditor::pixelEditor(QObject* parent) : QObject(parent), canvasInstance(nullptr) {
-
-}
+pixelEditor::pixelEditor(QObject* parent) : QObject(parent), canvasInstance(nullptr) {}
 
 void pixelEditor::setTool(Tools pickTool){
     currentTool = pickTool;

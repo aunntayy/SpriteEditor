@@ -27,6 +27,10 @@ public:
 
     void colorUI(QWidget *colorsTab);
 
+    QAction* saveButton;
+    QAction* loadButton;
+
+
 private:
     Ui::MainWindow *ui;
     pixelEditor* editor;
@@ -43,6 +47,7 @@ private:
     QPushButton *brushColor;
     QMap<QPushButton*, QColor> customColors;
 
+    void connectSignals();
 
 private slots:
     void updateColorOnSlider();
@@ -50,6 +55,9 @@ private slots:
     void updateColorCustomPalette();
     void sendColorToEditor();
 
+signals:
+    void saveButtonClicked();
+    void loadButtonClicked();
 
 };
 

@@ -10,20 +10,24 @@ CONFIG += c++17
 
 SOURCES += \
     canvas.cpp \
+    filemanager.cpp \
     frame.cpp \
     framepanel.cpp \
     main.cpp \
     mainwindow.cpp \
     model.cpp \
-    pixeleditor.cpp
+    pixeleditor.cpp \
+    previewer.cpp
 
 HEADERS += \
     canvas.h \
+    filemanager.h \
     frame.h \
     framepanel.h \
     mainwindow.h \
     model.h \
-    pixeleditor.h
+    pixeleditor.h \
+    previewer.h
 
 FORMS += \
     mainwindow.ui

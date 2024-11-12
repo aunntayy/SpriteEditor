@@ -5,19 +5,25 @@
 #include <QImage>
 #include <QPoint>
 #include <QColor>
-#include <QGraphicsItem>
+#include "frame.h"
 
 class Canvas : public QWidget{
     Q_OBJECT
 
 public:
-    explicit Canvas(int width, int height, QWidget* parent = nullptr);
+    explicit Canvas(int width, int height, int pixelSize, QWidget* parent = nullptr)
     QImage image;
     QPoint lastPoint;
     QColor brushColor;
 
 signals:
     void mousePressCanvas(QPoint point);
+    void sendCurrentImage(const QImage& img);
+
+public slots:
+    void clear();
+    void updateFrameFromCanvas(Frame* frame);
+    void drawFromFrame(Frame* frame);
 
 protected:
     void paintEvent(QPaintEvent* event) override;

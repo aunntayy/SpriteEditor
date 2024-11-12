@@ -13,12 +13,13 @@ class FramePanel : public QWidget {
 
 public:
     FramePanel(Model *model, QWidget *parent = nullptr);
+    void updateFrameList();
+    void updateButtonIconBasedOnFrame(Frame* frame);
 
 private slots:
     void onAddFrame();
     void onDuplicateFrame();
     void onRemoveFrame();
-    void updateFrameList();
     void selectFrame(int index);
 
 private:
@@ -35,7 +36,7 @@ private:
     int selectedFrameIndex = -1;
 
     void addFrameButton(int index);
-    void updateButtonIcon(QPushButton *button, const QPixmap &pixmap);
+    void updateButtonIcon(QPushButton *button, int frameIndex);
     void highlightSelectedFrame(int index);
 };
 
