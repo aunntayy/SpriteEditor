@@ -2,7 +2,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 
-Canvas::Canvas(int width, int height, int pixelSize, QWidget* parent)
+Canvas::Canvas(int width, int height, QWidget* parent)
     : QWidget(parent) {
     brushColor = QColor(Qt::black);
     image = QImage(width, height, QImage::Format_RGB888);
@@ -16,7 +16,7 @@ void Canvas::paintEvent(QPaintEvent* event) {
 
 void Canvas::mousePressEvent(QMouseEvent* mouseEvent) {
     if (mouseEvent->button() == Qt::LeftButton) {
-        lastPoint = mouseEvent->pos;
+        lastPoint = mouseEvent->pos();
         emit mousePressCanvas(lastPoint);
     }
 }

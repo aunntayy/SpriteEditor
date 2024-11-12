@@ -11,7 +11,7 @@ class Canvas : public QWidget{
     Q_OBJECT
 
 public:
-    explicit Canvas(int width, int height, int pixelSize, QWidget* parent = nullptr)
+    explicit Canvas(int width, int heigh, QWidget* parent = nullptr);
     QImage image;
     QPoint lastPoint;
     QColor brushColor;

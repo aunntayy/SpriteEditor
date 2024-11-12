@@ -2,7 +2,7 @@
 #define PIXELEDITOR_H
 #include <QObject>
 #include<QColor>
-#include <QPoi
+#include<QPoint>
 #include <QStack>
 class Canvas;
 
