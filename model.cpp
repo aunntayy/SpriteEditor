@@ -64,8 +64,9 @@ void Model::setCurrentFrameIndex(int index) {
 }
 void Model::updateCurrentFrameImage(const QImage& img) {
     if (currentFrameIndex >= 0 && currentFrameIndex < frameList.size()) {
+        qDebug() << "Updating frame at index:" << currentFrameIndex;
         frameList[currentFrameIndex]->setImage(img);
-        emit updateDrawingPanel(frameList[currentFrameIndex]);  // Notify FramePanel to update UI
+        emit updateFrameList();
     }
 }
 

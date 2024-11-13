@@ -392,6 +392,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(canvas, &Canvas::sendCurrentImage, model, &Model::updateCurrentFrameImage);
     connect(model, &Model::updateDrawingPanel, framePanel, &FramePanel::updateButtonIconBasedOnFrame);
     connect(framePanel, &FramePanel::clearCanvas, canvas, &Canvas::clear);
+    connect(framePanel, &FramePanel::frameSelected, canvas, &Canvas::drawFromFrame);
+    connect(canvas, &Canvas::canvasModified, model, &Model::updateCurrentFrameImage);
+    connect(model, &Model::updateFrameList, framePanel, &FramePanel::updateFrameList);
 }
 
 void MainWindow::updateColorOnSlider() {

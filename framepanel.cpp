@@ -61,8 +61,11 @@ void FramePanel::onRemoveFrame() {
 void FramePanel::selectFrame(int index) {
     if (index >= 0 && index < model->getFrames().size()) {
         selectedFrameIndex = index;
+        model->setCurrentFrameIndex(index);
+        Frame* selectedFrame = model->getFrames()[index];
+        emit frameSelected(selectedFrame);
         qDebug() << "Frame selected: " << index;
-        // Potentially emit a signal or update UI here
+        highlightSelectedFrame(index);
     }
 }
 void FramePanel::addFrameButton(int index) {
