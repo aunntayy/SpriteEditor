@@ -46,12 +46,22 @@ private:
         QColor prevColor;
     };
 
+    struct pixelData {
+        QPoint pixelCoor;
+        QColor currPixelColor;
+        int currPixleSize;
+
+        pixelData(const QPoint& pos, const QColor& col, int s)
+            : pixelCoor(pos), currPixelColor(col), currPixleSize(s) {}
+    };
+
     Tools currentTool;
     int pixelSize;
     Canvas* canvasInstance;
 
-    QVector<QPoint> drawnPixels;
-    QVector<QPoint> originalDrawnPixels;
+    QVector<pixelData> drawnPixels;
+    QVector<pixelData> originalDrawnPixels;
+    int originalPixelSize;
     QPoint startMovePoint;
     bool isMoving;
     QColor currentBrushColor;

@@ -38,7 +38,7 @@ void pixelEditor::drawWithCurrTool(QPoint point) {
     // Move tool
     if (currentTool == 4) {
         if (!isMoving) {
-            startMovePoint = point;
+            startMovePoint = QPoint(gridX, gridY);
             originalDrawnPixels = drawnPixels;  // Capture original positions
             isMoving = true;
         } else {
@@ -68,8 +68,8 @@ void pixelEditor::drawPixel(int x, int y) {
         painter.setBrush(currentBrushColor);
 
         // track the draw pixel
-        QPoint newPoint(x, y);
-        drawnPixels.append(newPoint);
+        pixelData newPixel = {QPoint(x, y), currentBrushColor, pixelSize};
+        drawnPixels.append(newPixel);
 
         // Draw rect
         painter.drawRect(x, y, pixelSize, pixelSize);
@@ -92,8 +92,12 @@ void pixelEditor::erasePixel(int x, int y) {
         painter.setBrush(QBrush(Qt::white));
 
         // Remove the erased pixel from `drawnPixels`
-        QPoint pointToErase(x, y);
-        drawnPixels.removeAll(pointToErase);
+        for (int i = 0; i < drawnPixels.size(); ++i) {
+            if (drawnPixels[i].pixelCoor == QPoint(x, y)) {
+                drawnPixels.removeAt(i);
+                break;  // Break if only one pixel per position is expected
+            }
+        }
 
         // Draw rect
         painter.drawRect(x, y, pixelSize, pixelSize);
@@ -130,7 +134,7 @@ void pixelEditor::fillColor(int x, int y) {
             currImage.setPixelColor(cx, cy, currentBrushColor);
 
             // Track filled pixel
-            QPoint filledPoint((cx / pixelSize) * pixelSize, (cy / pixelSize) * pixelSize);
+            pixelData filledPoint = {QPoint((cx / pixelSize) * pixelSize, (cy / pixelSize) * pixelSize), currentBrushColor, pixelSize};
             drawnPixels.append(filledPoint);
 
             points.push(QPoint(cx + 1, cy));
@@ -154,23 +158,26 @@ void pixelEditor::movePixel(int x, int y) {
 
     QPainter painter(&canvasInstance->image);
     painter.setPen(Qt::NoPen);
-    painter.setBrush(currentBrushColor);
 
     // Move and redraw each pixel from originalDrawnPixels
     drawnPixels.clear();  // Clear drawnPixels to store new positions
-    for (const QPoint &originalPoint : originalDrawnPixels) {
-        QPoint newPoint = originalPoint + QPoint(dx, dy);  // Apply offset
+    for (const pixelData &originalPoint : originalDrawnPixels) {
+        QPoint newPoint = originalPoint.pixelCoor + QPoint(dx, dy);  // Apply offset
 
-        // Draw at the new position
-        painter.drawRect(newPoint.x(), newPoint.y(), pixelSize, pixelSize);
+        // Set the brush to the pixel's original color
+        painter.setBrush(originalPoint.currPixelColor);
 
-        // Track new position
-        drawnPixels.append(newPoint);
+        // Draw the pixel at the new position with its original size
+        painter.drawRect(newPoint.x(), newPoint.y(), originalPoint.currPixleSize, originalPoint.currPixleSize);
+
+        // Track the new position, color, and size in drawnPixels
+        drawnPixels.append({newPoint, originalPoint.currPixelColor, originalPoint.currPixleSize});
     }
 
     // Update canvas with moved pixels
     canvasInstance->update();
 }
+
 
 void pixelEditor::setBrushColor(const QColor &color) {
     currentBrushColor = color;
