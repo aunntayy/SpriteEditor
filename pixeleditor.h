@@ -41,11 +41,6 @@ public slots:
     void drawWithCurrTool(QPoint point);
 
 private:
-    struct PixelAction {
-        int x, y;
-        QColor prevColor;
-    };
-
     struct pixelData {
         QPoint pixelCoor;
         QColor currPixelColor;
@@ -65,7 +60,7 @@ private:
     QPoint startMovePoint;
     bool isMoving;
     QColor currentBrushColor;
-    QStack<PixelAction> actionHistory;
+    QList<pixelData> actionHistory;
 };
 
 #endif // PIXELEDITOR_H
