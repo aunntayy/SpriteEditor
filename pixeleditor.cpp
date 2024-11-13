@@ -91,11 +91,19 @@ void pixelEditor::erasePixel(int x, int y) {
         painter.setPen(Qt::NoPen);
         painter.setBrush(QBrush(Qt::white));
 
-        // Remove the erased pixel from `drawnPixels`
+        // Remove the pixel from drawnPixels
         for (int i = 0; i < drawnPixels.size(); ++i) {
             if (drawnPixels[i].pixelCoor == QPoint(x, y)) {
                 drawnPixels.removeAt(i);
-                break;  // Break if only one pixel per position is expected
+                break;
+            }
+        }
+
+        // Also remove the pixel from originalDrawnPixels
+        for (int i = 0; i < originalDrawnPixels.size(); ++i) {
+            if (originalDrawnPixels[i].pixelCoor == QPoint(x, y)) {
+                originalDrawnPixels.removeAt(i);
+                break;
             }
         }
 

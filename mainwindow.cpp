@@ -178,15 +178,24 @@ MainWindow::MainWindow(QWidget *parent)
     // --++Checkable actions for Brush, Erase, and Fill with icons++--
 
     // brush size slider
+    QLabel* brushSizeLabel = new QLabel("20 px", this);
+
     QSlider* brushSizeSlider = new QSlider(Qt::Horizontal, this);
 
     brushSizeSlider->setFixedWidth(100);
     QVector<int> brushSize = {20, 40, 60, 80, 100}; // adjust brush size here
     brushSizeSlider->setRange(0, 4); // 4 different brush size
 
+    connect(brushSizeSlider, &QSlider::valueChanged, this, [=](int value) {
+        int currentBrushSize = brushSize[value];
+        brushSizeLabel->setText(QString::number(currentBrushSize) + " px"); // Update label
+    });
+
     // set default starting slider to 20px
     brushSizeSlider->setValue(0);
     editor->setPixelSize(brushSize[0]);
+    toolBar->addWidget(brushSizeLabel);
+    toolBar->addSeparator();
     toolBar->addWidget(brushSizeSlider);
 
     // brush button
