@@ -397,13 +397,7 @@ MainWindow::MainWindow(QWidget *parent)
     editor->setCanvasInstance(canvas);
     setCentralWidget(canvas);
 
-    connect(canvas, &Canvas::mousePressCanvas, editor, &pixelEditor::drawWithCurrTool);
-    connect(canvas, &Canvas::sendCurrentImage, model, &Model::updateCurrentFrameImage);
-    connect(model, &Model::updateDrawingPanel, framePanel, &FramePanel::updateButtonIconBasedOnFrame);
-    connect(framePanel, &FramePanel::clearCanvas, canvas, &Canvas::clear);
-    connect(framePanel, &FramePanel::frameSelected, canvas, &Canvas::drawFromFrame);
-    connect(canvas, &Canvas::canvasModified, model, &Model::updateCurrentFrameImage);
-    connect(model, &Model::updateFrameList, framePanel, &FramePanel::updateFrameList);
+    connectSignals();
 }
 
 void MainWindow::updateColorOnSlider() {
@@ -474,6 +468,16 @@ void MainWindow::sendColorToEditor() {
     editor->setBrushColor(color);
 }
 
+void MainWindow::connectSignals()
+{
+    connect(canvas, &Canvas::mousePressCanvas, editor, &pixelEditor::drawWithCurrTool);
+    connect(canvas, &Canvas::sendCurrentImage, model, &Model::updateCurrentFrameImage);
+    connect(model, &Model::updateDrawingPanel, framePanel, &FramePanel::updateButtonIconBasedOnFrame);
+    connect(framePanel, &FramePanel::clearCanvas, canvas, &Canvas::clear);
+    connect(framePanel, &FramePanel::frameSelected, canvas, &Canvas::drawFromFrame);
+    connect(canvas, &Canvas::canvasModified, model, &Model::updateCurrentFrameImage);
+    connect(model, &Model::updateFrameList, framePanel, &FramePanel::updateFrameList);
+}
 
 MainWindow::~MainWindow()
 {

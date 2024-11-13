@@ -12,19 +12,19 @@ class Canvas : public QWidget{
 
 public:
     explicit Canvas(int width, int heigh, QWidget* parent = nullptr);
-    QImage image;
-    QPoint lastPoint;
-    QColor brushColor;
+    void clear();
+    void updateFrameFromCanvas(Frame* frame);
+    void drawFromFrame(Frame* frame);
 
 signals:
     void mousePressCanvas(QPoint point);
     void sendCurrentImage(const QImage& img);
     void canvasModified(const QImage& image);
 
-public slots:
-    void clear();
-    void updateFrameFromCanvas(Frame* frame);
-    void drawFromFrame(Frame* frame);
+private:
+    QImage image;
+    QPoint lastPoint;
+    QColor brushColor;
 
 protected:
     void paintEvent(QPaintEvent* event) override;

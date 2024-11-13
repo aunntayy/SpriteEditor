@@ -11,7 +11,6 @@ public:
     Frame& operator=(const Frame& other);
     ~Frame();
 
-    // Utility functions
     QColor getPixelColor(int x, int y) const;
     void setPixelColor(int x, int y, const QColor& color);
     const QImage& getImage() const;

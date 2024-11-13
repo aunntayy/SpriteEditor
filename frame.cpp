@@ -1,7 +1,7 @@
 #include "frame.h"
 
 Frame::Frame(int width, int height) : frameImage(width, height, QImage::Format_ARGB32) {
-    frameImage.fill(Qt::white); // Default to a white background
+    frameImage.fill(Qt::white);
 }
 
 Frame::Frame(const Frame& other) : frameImage(other.frameImage) {}

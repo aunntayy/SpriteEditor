@@ -19,6 +19,7 @@ public:
 signals:
     void clearCanvas();
     void frameSelected(Frame* frame);
+
 private slots:
     void onAddFrame();
     void onDuplicateFrame();
