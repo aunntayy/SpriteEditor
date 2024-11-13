@@ -54,6 +54,10 @@ void FramePanel::onRemoveFrame() {
     if (selectedFrameIndex >= 0 && selectedFrameIndex < model->getFrames().size()) {
         model->removeFrame(selectedFrameIndex);
         qDebug() << "Remove Frame triggered for index: " << selectedFrameIndex;
+
+        if (model->getFrames().isEmpty()) {
+            emit clearCanvas();
+        }
     }
 }
 
@@ -102,7 +106,9 @@ void FramePanel::updateFrameList() {
     for (int i = 0; i < model->getFrames().size(); ++i) {
         addFrameButton(i);
     }
-    selectedFrameIndex = -1;
+    if (model->getFrames().isEmpty()) {
+        selectedFrameIndex = -1;
+    }
 }
 
 void FramePanel::updateButtonIconBasedOnFrame(Frame* frame) {

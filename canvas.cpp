@@ -49,7 +49,6 @@ void Canvas::drawFromFrame(Frame* frame) {
 }
 
 void Canvas::updateFrameFromCanvas(Frame* frame) {
-    image = QImage(800, 800, QImage::Format_RGB888);
     image.fill(Qt::white);
     drawFromFrame(frame);
     repaint();
