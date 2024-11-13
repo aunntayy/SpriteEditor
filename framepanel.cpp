@@ -37,6 +37,7 @@ FramePanel::FramePanel(Model *model, QWidget *parent)
 
 void FramePanel::onAddFrame() {
     model->addFrame();
+    emit clearCanvas();
     qDebug() << "Add Frame triggered";
 }
 

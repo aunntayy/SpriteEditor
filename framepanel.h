@@ -16,6 +16,9 @@ public:
     void updateFrameList();
     void updateButtonIconBasedOnFrame(Frame* frame);
 
+signals:
+    void clearCanvas();
+
 private slots:
     void onAddFrame();
     void onDuplicateFrame();
