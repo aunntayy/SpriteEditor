@@ -57,7 +57,6 @@ void pixelEditor::drawPixel(int x, int y) {
     if (canvasInstance) {
         QColor prevColor = canvasInstance->image.pixelColor(x, y);
         addActionToHistory(x, y, prevColor);
-
         // range check
         if (x < 0 || x >= canvasInstance->width() || y < 0 || y >= canvasInstance->height()) {
             return;
@@ -192,14 +191,18 @@ void pixelEditor::setBrushColor(const QColor &color) {
 }
 
 void pixelEditor::addActionToHistory(int x, int y, const QColor& prevColor){
-    actionHistory.push({x,y,prevColor});
+    actionHistory.push_back({QPoint(x, y), prevColor, pixelSize});
 }
 
 void pixelEditor::undoLastAction() {
-    if (actionHistory.isEmpty() || !canvasInstance) return;
-    PixelAction lastAction = actionHistory.pop();
-    QImage& image = canvasInstance->image;
-    image.setPixelColor(lastAction.x, lastAction.y, lastAction.prevColor);
 
+    if (actionHistory.isEmpty() || !canvasInstance) return;
+    pixelData lastAction = actionHistory.takeLast();
+
+    QPainter painter(&canvasInstance->image);
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(lastAction.currPixelColor);
+    painter.drawRect(lastAction.pixelCoor.x(), lastAction.pixelCoor.y(),lastAction.currPixleSize,lastAction.currPixleSize);
     canvasInstance->update();
 }
+

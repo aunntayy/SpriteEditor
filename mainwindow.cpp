@@ -255,8 +255,7 @@ MainWindow::MainWindow(QWidget *parent)
     toolBar->addAction(undoAction);
 
     connect(undoAction, &QAction::triggered, this, [=]() {
-        editor->setTool(pixelEditor::Undo);
-        editor->drawWithCurrTool(QPoint());
+        editor->undoLastAction();
     });
 
 
