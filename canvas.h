@@ -15,6 +15,7 @@ public:
     void clear();
     void updateFrameFromCanvas(Frame* frame);
     void drawFromFrame(Frame* frame);
+    QImage image;
 
 signals:
     void mousePressCanvas(QPoint point);
@@ -22,7 +23,6 @@ signals:
     void canvasModified(const QImage& image);
 
 private:
-    QImage image;
     QPoint lastPoint;
     QColor brushColor;
 
