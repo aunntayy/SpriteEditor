@@ -48,9 +48,6 @@ void pixelEditor::drawWithCurrTool(QPoint point) {
     } else {
         isMoving = false;
     }
-    if(currentTool == 5){
-        undoLastAction();
-    }
 }
 
 void pixelEditor::drawPixel(int x, int y) {
