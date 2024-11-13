@@ -131,7 +131,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // window setup
     this->setWindowTitle("CS3505 Sprite Editor");
-    this->setFixedSize(1200, 700);
+    this->setFixedSize(1200, 900);
     this->move(250, 50);
     this->setStatusBar(nullptr);
 
@@ -400,6 +400,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(canvas, &Canvas::mousePressCanvas, editor, &pixelEditor::drawWithCurrTool);
     connect(canvas, &Canvas::sendCurrentImage, model, &Model::updateCurrentFrameImage);
     connect(model, &Model::updateDrawingPanel, framePanel, &FramePanel::updateButtonIconBasedOnFrame);
+    connect(framePanel, &FramePanel::clearCanvas, canvas, &Canvas::clear);
+    connect(framePanel, &FramePanel::frameSelected, canvas, &Canvas::drawFromFrame);
+    connect(canvas, &Canvas::canvasModified, model, &Model::updateCurrentFrameImage);
+    connect(model, &Model::updateFrameList, framePanel, &FramePanel::updateFrameList);
 }
 
 void MainWindow::updateColorOnSlider() {

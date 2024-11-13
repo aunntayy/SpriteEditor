@@ -30,6 +30,12 @@ void Canvas::mouseMoveEvent(QMouseEvent* mouseEvent) {
     }
 }
 
+void Canvas::mouseReleaseEvent(QMouseEvent* mouseEvent) {
+    if (mouseEvent->button() == Qt::LeftButton) {
+        emit canvasModified(image);
+    }
+}
+
 void Canvas::drawFromFrame(Frame* frame) {
     if (!frame) return;
     const QImage& frameImage = frame->getImage();

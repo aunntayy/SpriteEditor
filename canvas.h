@@ -19,6 +19,7 @@ public:
 signals:
     void mousePressCanvas(QPoint point);
     void sendCurrentImage(const QImage& img);
+    void canvasModified(const QImage& image);
 
 public slots:
     void clear();
@@ -29,6 +30,7 @@ protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* mouseEvent) override;
     void mouseMoveEvent(QMouseEvent* mouseEvent) override;
+    void mouseReleaseEvent(QMouseEvent* mouseEvent) override;
 };
 
 #endif // CANVAS_H
