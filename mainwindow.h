@@ -23,6 +23,7 @@
 #include "pixeleditor.h"
 #include "canvas.h"
 #include "model.h"
+#include "filemanager.h"
 #include "framepanel.h"
 #include "previewer.h"
 
@@ -63,7 +64,9 @@ private:
     Ui::MainWindow *ui;
     pixelEditor* editor;
     Previewer *previewer;
-    Model *model;
+    Model* model;
+    FileManager* fileManager;
+
     FramePanel *framePanel;
     Canvas *canvas;
 
@@ -110,10 +113,15 @@ private slots:
     void sendColorToEditor();
 
 signals:
+<<<<<<< HEAD
     /**
      * @brief Emitted when the save button is clicked.
      */
     void saveButtonClicked();
+=======
+    // void saveButtonClicked();
+    // void loadButtonClicked();
+>>>>>>> YELLOW-fileManager-3
 
     /**
      * @brief Emitted when the load button is clicked.

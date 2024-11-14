@@ -21,6 +21,9 @@
 #include <QSlider>
 #include <QSplitter>
 #include <QToolButton>
+
+
+
 void MainWindow::colorUI(QWidget *colorsTab) {
     QVBoxLayout *colorsLayout = new QVBoxLayout();
 
@@ -157,6 +160,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Instantiate the model
     model = new Model(this);
+    model->setResolution(123);
+    fileManager = new FileManager();
+
 
     // toolbar
     QToolBar *toolBar = addToolBar("Toolbar");
@@ -169,8 +175,14 @@ MainWindow::MainWindow(QWidget *parent)
     toolBar->addAction(saveButton);
     toolBar->addAction(loadButton);
 
-    // connect(&saveButton, &QAction::triggered, &fileManager,
-    // &FileManager::onSaveButtonClicked());
+
+    QObject::connect(saveButton, &QAction::triggered, [this]() {
+        fileManager->saveToFile(*this->model);
+    });
+    QObject::connect(loadButton, &QAction::triggered, [this]() {
+        fileManager->loadFromFile(*this->model);
+    });
+
 
     // panel
     QDockWidget *panel = new QDockWidget("Panel", this);
