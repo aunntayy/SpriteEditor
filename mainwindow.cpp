@@ -22,6 +22,7 @@
 #include <QSlider>
 #include <QSplitter>
 #include <QColorDialog>
+#include <QMessageBox>
 
 void MainWindow::colorUI(QWidget *colorsTab) {
     QVBoxLayout *colorsLayout = new QVBoxLayout();
@@ -121,8 +122,29 @@ void MainWindow::colorUI(QWidget *colorsTab) {
     colorsTab->setLayout(colorsLayout);
 }
 
+void MainWindow::setResolutionOnLoad(QVector<int> brushSize)
+{
+    QMessageBox::StandardButton reply;
+    QMessageBox msgBox(this);
 
+    msgBox.setWindowTitle("Sprite Editor");
+    msgBox.setText("Choose the resolution:");
+    msgBox.setIcon(QMessageBox::Question);
 
+    QPushButton* bttn32x32 = msgBox.addButton("32x32", QMessageBox::AcceptRole);
+    QPushButton* bttn64x64 = msgBox.addButton("64x64", QMessageBox::AcceptRole);
+    QPushButton* bttn128x128 = msgBox.addButton("128x128", QMessageBox::AcceptRole);
+
+    reply = static_cast<QMessageBox::StandardButton>(msgBox.exec());
+
+    if(msgBox.clickedButton() == bttn32x32){
+        editor->setPixelSize(brushSize[2]);
+    }else if(msgBox.clickedButton() == bttn64x64){
+        editor->setPixelSize(brushSize[1]);
+    }else if(msgBox.clickedButton() == bttn128x128){
+        editor->setPixelSize(brushSize[0]);
+    }
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -135,11 +157,8 @@ MainWindow::MainWindow(QWidget *parent)
     this->move(250, 50);
     this->setStatusBar(nullptr);
 
-
     // Instantiate the model
     model = new Model(this);
-
-
 
     // toolbar
     QToolBar *toolBar = addToolBar("Toolbar");
@@ -395,6 +414,8 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug() << "canvas created";
     editor->setCanvasInstance(canvas);
     setCentralWidget(canvas);
+
+    setResolutionOnLoad(brushSize);
 
     connectSignals();
 }
