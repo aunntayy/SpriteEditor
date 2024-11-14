@@ -10,7 +10,7 @@
 #include "canvas.h"
 #include "model.h"
 #include "framepanel.h"
-
+#include "previewer.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -34,6 +34,7 @@ public:
 private:
     Ui::MainWindow *ui;
     pixelEditor* editor;
+    Previewer *previewer;
     Model *model;
     FramePanel *framePanel;
     Canvas *canvas;

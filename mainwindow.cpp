@@ -4,6 +4,7 @@
 #include "canvas.h"
 #include "framepanel.h"
 #include "model.h"
+#include "previewer.h"
 
 #include <QToolBar>
 
@@ -355,9 +356,20 @@ MainWindow::MainWindow(QWidget *parent)
     panel->setWidget(panelContainer);
 
     // preview area
-    QWidget *previewer = new QWidget();
+    previewer = new Previewer();
     previewer->setFixedHeight(325);
     previewer->setStyleSheet("background-color: rgb(200, 200, 200);");
+    // Connect Previewer to Model
+    connect(model, &Model::updateFrameList, this, [this]() {
+        QVector<QImage> imageList;
+        for (Frame* frame : model->getFrames()) {
+            if (frame) {
+                imageList.append(frame->getImage());
+            }
+        }
+        previewer->getImageListFromModel(imageList);
+        previewer->activateAnimation();
+    });
 
     // FramePanel - setup for managing frames
     framePanel = new FramePanel(model, this); // Instantiate FramePanel with Model
