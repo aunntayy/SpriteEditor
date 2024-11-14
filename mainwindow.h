@@ -113,15 +113,11 @@ private slots:
     void sendColorToEditor();
 
 signals:
-<<<<<<< HEAD
+
     /**
      * @brief Emitted when the save button is clicked.
      */
     void saveButtonClicked();
-=======
-    // void saveButtonClicked();
-    // void loadButtonClicked();
->>>>>>> YELLOW-fileManager-3
 
     /**
      * @brief Emitted when the load button is clicked.
