@@ -9,6 +9,7 @@
 #include "pixeleditor.h"
 #include "canvas.h"
 #include "model.h"
+#include "filemanager.h"
 #include "framepanel.h"
 
 
@@ -34,7 +35,8 @@ public:
 private:
     Ui::MainWindow *ui;
     pixelEditor* editor;
-    Model *model;
+    Model* model;
+    FileManager* fileManager;
     FramePanel *framePanel;
     Canvas *canvas;
 
@@ -58,8 +60,8 @@ private slots:
     void sendColorToEditor();
 
 signals:
-    void saveButtonClicked();
-    void loadButtonClicked();
+    // void saveButtonClicked();
+    // void loadButtonClicked();
 
 };
 

@@ -13,6 +13,7 @@ FileManager::FileManager() {}
 void FileManager::saveToFile(const Model &model)
 {
     qDebug() << "save button clicked";
+    qDebug() << "Model address in filemanager:" << &model;
 
 
     QString fileName = showSaveDialog();
@@ -23,6 +24,7 @@ void FileManager::saveToFile(const Model &model)
     if (file.open(QIODevice::WriteOnly))
     {
         QJsonDocument document(writeJson(model));
+        qDebug() << "3";
         QByteArray byteArray = document.toJson();
 
         file.write(byteArray);
@@ -84,6 +86,8 @@ QJsonObject FileManager::writeJson(const Model &model)
 
     QJsonObject json;
 
+    qDebug() << model.getResolution();
+    qDebug() << "Model address in filemanager:" << &model;
     json.insert("frameRate", model.getFrameRate());
     json.insert("resolution", model.getResolution());
 
@@ -123,8 +127,6 @@ QJsonObject FileManager::writeJson(const Model &model)
 
     json.insert("frames", frameArray);
 
-    // possibly save customized color palette as well
-
     return json;
 }
 
@@ -145,8 +147,6 @@ Model* FileManager::readJson(const QJsonObject &json)
     }
 
     //model.frameList = frames; // need to be a friend or iterate
-
-    // possibly load customized color palette as well
 
     return model;
 }

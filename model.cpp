@@ -11,6 +11,8 @@ Model::Model(QObject *parent) : QObject(parent), currentFrameIndex(-1) {
     //selectedTool = brush;
     toolSize = 5;
     toolColor = QColor(0, 0, 0);
+
+    qDebug() << "NEW MODEL CREATED";
 }
 
 Model::~Model() {
