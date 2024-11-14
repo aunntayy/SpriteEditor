@@ -53,7 +53,10 @@ void pixelEditor::drawWithCurrTool(QPoint point) {
 void pixelEditor::drawPixel(int x, int y) {
     if (canvasInstance) {
         QColor prevColor = canvasInstance->image.pixelColor(x, y);
-        addActionToHistory(x, y, prevColor);
+        if(prevColor != currentBrushColor){
+            addActionToHistory(x, y, prevColor);
+        }
+
         // range check
         if (x < 0 || x >= canvasInstance->width() || y < 0 || y >= canvasInstance->height()) {
             return;
@@ -76,7 +79,9 @@ void pixelEditor::drawPixel(int x, int y) {
 void pixelEditor::erasePixel(int x, int y) {
     if (canvasInstance) {
         QColor prevColor = canvasInstance->image.pixelColor(x, y);
-        addActionToHistory(x, y, prevColor);
+        if(prevColor != currentBrushColor){
+            addActionToHistory(x, y, prevColor);
+        }
 
         // range check
         if (x < 0 || x >= canvasInstance->width() || y < 0 || y >= canvasInstance->height()) {
@@ -192,10 +197,8 @@ void pixelEditor::addActionToHistory(int x, int y, const QColor& prevColor){
 }
 
 void pixelEditor::undoLastAction() {
-
     if (actionHistory.isEmpty() || !canvasInstance) return;
     pixelData lastAction = actionHistory.takeLast();
-
     QPainter painter(&canvasInstance->image);
     painter.setPen(Qt::NoPen);
     painter.setBrush(lastAction.currPixelColor);
