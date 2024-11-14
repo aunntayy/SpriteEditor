@@ -1,64 +1,57 @@
 #include "previewer.h"
 
 Previewer::Previewer(QWidget *parent)
-    : QWidget(parent), FPS(10), currentIndex(0)
+    : QWidget(parent), playbackSpeed(10), currentFrameIndex(0)
 {
-    // Initialize preview label to display frames
-    previewLabel = new QLabel(this);
-    previewLabel->setFixedSize(300, 300);  // Set size or adjust as needed
-    previewLabel->setAlignment(Qt::AlignCenter);
-    previewLabel->setStyleSheet("background-color: rgb(200, 200, 200);");
+    frameDisplay = new QLabel(this);
+    frameDisplay->setFixedSize(300, 300);
+    frameDisplay->setAlignment(Qt::AlignCenter);
+    frameDisplay->setStyleSheet("background-color: rgb(200, 200, 200);");
 
-    // Initialize frame rate slider to adjust playback speed
-    frameRateSlider = new QSlider(Qt::Horizontal, this);
-    frameRateSlider->setRange(1, 60);
-    frameRateSlider->setValue(FPS);  // Default FPS
-    frameRateSlider->setTickPosition(QSlider::TicksBelow);
-    frameRateSlider->setTickInterval(5);
+    speedSlider = new QSlider(Qt::Horizontal, this);
+    speedSlider->setRange(1, 60);
+    speedSlider->setValue(playbackSpeed);  // Default playback speed
+    speedSlider->setTickPosition(QSlider::TicksBelow);
+    speedSlider->setTickInterval(5);
 
-    // Connect frame rate slider to the slot to change FPS
-    connect(frameRateSlider, &QSlider::valueChanged, this, &Previewer::setFramePerSecond);
-    connect(&delayTimer, &QTimer::timeout, this, &Previewer::showPreviewAnimation);
+    connect(speedSlider, &QSlider::valueChanged, this, &Previewer::setPlaybackSpeed);
+    connect(&animationTimer, &QTimer::timeout, this, &Previewer::displayNextFrame);
 
-    // Layout to arrange the label and slider
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(previewLabel);
-    layout->addWidget(frameRateSlider);
+    layout->addWidget(frameDisplay);
+    layout->addWidget(speedSlider);
     setLayout(layout);
 }
 
-Previewer::~Previewer()
-{}
+Previewer::~Previewer() {}
 
-void Previewer::getImageListFromModel(QVector<QImage> imgList)
+void Previewer::setImageSequence(const QVector<QImage>& images)
 {
-    imageListFromModel = imgList;
-    currentIndex = 0;  // Reset frame index for new animation
+    frameSequence = images;
+    currentFrameIndex = 0;
 }
 
-void Previewer::showPreviewAnimation()
+void Previewer::displayNextFrame()
 {
-    if (imageListFromModel.isEmpty()) return;
+    if (frameSequence.isEmpty()) return;
 
-    // Display current frame in the preview label
-    previewLabel->setPixmap(QPixmap::fromImage(imageListFromModel[currentIndex])
-                                .scaled(previewLabel->size(), Qt::KeepAspectRatio));
+    frameDisplay->setPixmap(QPixmap::fromImage(frameSequence[currentFrameIndex])
+                                .scaled(frameDisplay->size(), Qt::KeepAspectRatio));
 
-    // Move to the next frame, looping back to the first frame if necessary
-    currentIndex = (currentIndex + 1) % imageListFromModel.size();
+    currentFrameIndex = (currentFrameIndex + 1) % frameSequence.size();
 }
 
-void Previewer::setFramePerSecond(int framesPerSecond)
+void Previewer::setPlaybackSpeed(int framesPerSecond)
 {
-    FPS = framesPerSecond;
-    if (delayTimer.isActive()) {
-        delayTimer.setInterval(1000 / FPS);  // Adjust timer interval based on new FPS
+    playbackSpeed = framesPerSecond;
+    if (animationTimer.isActive()) {
+        animationTimer.setInterval(1000 / playbackSpeed);
     }
 }
 
-void Previewer::activateAnimation()
+void Previewer::startAnimation()
 {
-    if (!delayTimer.isActive() && !imageListFromModel.isEmpty()) {
-        delayTimer.start(1000 / FPS);  // Start the animation timer with the set FPS
+    if (!animationTimer.isActive() && !frameSequence.isEmpty()) {
+        animationTimer.start(1000 / playbackSpeed);
     }
 }

@@ -367,8 +367,8 @@ MainWindow::MainWindow(QWidget *parent)
                 imageList.append(frame->getImage());
             }
         }
-        previewer->getImageListFromModel(imageList);
-        previewer->activateAnimation();
+        previewer->setImageSequence(imageList);
+        previewer->startAnimation();
     });
 
     // FramePanel - setup for managing frames

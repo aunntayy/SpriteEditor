@@ -17,20 +17,19 @@ public:
     explicit Previewer(QWidget *parent = nullptr);
     ~Previewer();
 
-    void getImageListFromModel(QVector<QImage> imgList);  // Sets image list from model
-    void showPreviewAnimation();                          // Displays each frame in sequence
-    void setFramePerSecond(int framesPerSecond);          // Adjusts the animation speed
-    void activateAnimation();              // Adjusts the animation speed
+    void setImageSequence(const QVector<QImage>& images);
+    void displayNextFrame();
+    void setPlaybackSpeed(int framesPerSecond);
+    void startAnimation();
 
-private:                           // Starts the animation
+private:
+    QVector<QImage> frameSequence;
+    QTimer animationTimer;
 
-    QVector<QImage> imageListFromModel;                   // Holds the list of frames
-    QTimer delayTimer;                                    // Timer to control frame display rate
-
-    QLabel* previewLabel;                                 // Label to display each frame
-    QSlider* frameRateSlider;                             // Slider to adjust FPS
-    int FPS;                                              // Frames per second
-    int currentIndex;                                     // Tracks the current frame
+    QLabel* frameDisplay;
+    QSlider* speedSlider;
+    int playbackSpeed;
+    int currentFrameIndex;
 };
 
 #endif // PREVIEWER_H
