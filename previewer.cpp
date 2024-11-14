@@ -1,3 +1,14 @@
+/**
+ * @file Previewer.cpp
+ * @brief Header file for the Previewer class, a QWidget-based component for previewing a sequence of images as an animation.
+ *
+ * The Previewer class provides functionality to load a sequence of images, adjust playback speed, and animate the frames
+ * similar to a preview tool like Piskel. It manages frame display and playback speed using a QLabel for frame rendering
+ * and a QSlider for user-controlled speed adjustments. The animation is driven by a QTimer for frame transitions.
+ *
+ * Author: Thu Ha, Chanphone Visathip
+ * Reviewer: Thu Ha
+ */
 #include "previewer.h"
 
 Previewer::Previewer(QWidget *parent)
