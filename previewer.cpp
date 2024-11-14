@@ -10,7 +10,6 @@
  * Reviewed by: Phuc Hoang
  */
 
-
 #include "previewer.h"
 
 Previewer::Previewer(QWidget *parent)
