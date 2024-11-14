@@ -6,6 +6,7 @@
 
 
 #include "filemanager.h"
+#include <QDebug>
 
 FileManager::FileManager() {}
 
@@ -76,6 +77,11 @@ Model* FileManager::loadFromFile(const Model &model)
 
 QJsonObject FileManager::writeJson(const Model &model)
 {
+    int count = 0;
+    qDebug() << "writing json";
+    int num_frames = model.getFrames().count();
+    qDebug() << num_frames;
+
     QJsonObject json;
 
     json.insert("frameRate", model.getFrameRate());
@@ -84,9 +90,37 @@ QJsonObject FileManager::writeJson(const Model &model)
     QJsonArray frameArray;
     for (Frame* frame : model.getFrames())
     {
+        count++;
+        qDebug() << count;
+
+        int height = frame->getImage().height();
+        int width = frame->getImage().width();
+
         QJsonObject frameObj;
+        frameObj.insert("width", width);
+        frameObj.insert("height", height);
+
+        QJsonArray pixelData;
+        for (int y = 0; y < height; ++y)
+        {
+            for (int x = 0; x < width; ++x)
+            {
+                QColor color = frame->getPixelColor(x, y);
+
+                QJsonObject colorObj;
+                colorObj.insert("r", color.red());
+                colorObj.insert("g", color.green());
+                colorObj.insert("b", color.blue());
+                colorObj.insert("a", color.alpha());
+
+                pixelData.append(colorObj);
+            }
+        }
+        frameObj.insert("pixels", pixelData);
+
         frameArray.append(frameObj);
     }
+
     json.insert("frames", frameArray);
 
     // possibly save customized color palette as well

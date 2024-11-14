@@ -8,6 +8,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QByteArray>
+#include <QColor>
 #include "Model.h"
 
 #include <QDebug>
@@ -38,7 +39,6 @@ private:
 
     /**
      * @brief Confirmation dialog for saving the file
-     * @return
      */
     bool confirmSave();
 
