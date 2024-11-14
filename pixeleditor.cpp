@@ -82,6 +82,7 @@ void pixelEditor::erasePixel(int x, int y) {
 
         // Only proceed if the pixel is not already white
         if (prevColor != Qt::white) {
+
             // Save the current color for undo
             addActionToHistory(x, y, prevColor);
 
@@ -133,6 +134,10 @@ void pixelEditor::fillColor(int x, int y) {
         if (currImage.pixelColor(cx, cy) == targetAreaColor) {
             // Save the current color and grid position to fillAction before filling
             fillAction.append({QPoint(cx, cy), targetAreaColor, pixelSize});
+
+            // Track the filled pixel in drawnPixels
+            pixelData fillPixel = {QPoint(cx, cy), currentBrushColor, pixelSize};
+            drawnPixels.append(fillPixel);
 
             // Set the pixel color to the fill color within the grid cell
             QPainter painter(&currImage);
