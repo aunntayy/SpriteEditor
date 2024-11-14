@@ -163,10 +163,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     toolBar->setStyleSheet(
         "background-color: rgb(100, 100, 100);"); // change color
-    QAction *action1 = new QAction("File Stuff", this);
     saveButton = new QAction("Save", this);
     loadButton = new QAction("Load", this);
-    toolBar->addAction(action1);
     toolBar->addAction(saveButton);
     toolBar->addAction(loadButton);
 

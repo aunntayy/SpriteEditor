@@ -110,7 +110,7 @@ Model* FileManager::readJson(const QJsonObject &json)
         frameList.append(frame);
     }
 
-    //model.frameList = frames; // need to be a friend or iterate
+    // model.frameList = frames; // need to be a friend or iterate
 
     // possibly load customized color palette as well
 

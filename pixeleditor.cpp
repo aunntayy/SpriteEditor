@@ -183,12 +183,13 @@ void pixelEditor::movePixel(int x, int y) {
 
         // Track the new position, color, and size in drawnPixels
         drawnPixels.append({newPoint, originalPoint.currPixelColor, originalPoint.currPixleSize});
+        // Track the moved pixel in drawnPixels
+        addActionToHistory(newPoint.x(), newPoint.y(),  originalPoint.currPixleSize);
     }
 
     // Update canvas with moved pixels
     canvasInstance->update();
 }
-
 
 void pixelEditor::setBrushColor(const QColor &color) {
     currentBrushColor = color;
