@@ -1,3 +1,18 @@
+/*
+ * Frame.cpp
+ *
+ * Description:
+ * This header file defines the Frame class, which represents an individual frame
+ * as a pixel-based image. The Frame class provides functionality for managing
+ * pixel colors, image dimensions, and image data. It also includes methods for
+ * copying and assignment operations, enabling multiple frames to be managed independently.
+ *
+ *
+ * Author: Thu Ha - Phuc Hoang
+ * Date: 11/06/2024
+ * Reviewed by: Thu Ha
+ */
+
 #include "frame.h"
 
 Frame::Frame(int width, int height) : frameImage(width, height, QImage::Format_ARGB32) {

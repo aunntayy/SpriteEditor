@@ -1,3 +1,17 @@
+/*
+ * MainWindow.cpp
+ *
+ * @brief Defines the MainWindow class, which is the main application window for
+ * managing UI elements, color settings, and connections to core components such
+ * as Canvas, PixelEditor, Model, and FramePanel. The MainWindow provides functionality
+ * for saving/loading files, color selection, and frame management.
+ *
+ *
+ * Author: Thu Ha - Phuc Hoang - Chanphone Visathip - Trenton Stratton
+ * Date: 11/07/
+ * Reviewed by: Chanphone Visathip
+ */
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 

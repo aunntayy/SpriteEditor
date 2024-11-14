@@ -1,3 +1,16 @@
+/*
+ * pixelEditor.cpp
+ *
+ * @brief Defines the pixelEditor class, which manages pixel-based drawing operations
+ * on a Canvas. The class provides tools for editing, such as brush, erase, fill, move,
+ * and undo functionality. It maintains an action history to allow undo operations and
+ * manages color and pixel size for drawing operations.
+ *
+ * Author: Phuc Hoang - Trenton Stratton - Chanphone Visathip
+ * Date: [Date]
+ * Reviewed by: Phuc Hoang
+ */
+
 #include "pixeleditor.h"
 #include "canvas.h"
 #include<QDebug>

@@ -1,7 +1,13 @@
-/**
- * NOTES:
+/*
+ * FileManager.h
  *
+ * Description:
+ * The FileManager class handles file operations for saving and loading
+ * a Model object in JSON format. It provides functions to serialize and
+ * deserialize the model data, as well as to interact with the file system
+ * using dialogs.
  *
+ * Author: Phuc Hoang - Trenton Stratton
  */
 
 

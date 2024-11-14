@@ -1,3 +1,18 @@
+/*
+ * FramePanel.cpp
+ *
+ * Description:
+ * This header file defines the FramePanel class, which represents a UI panel
+ * for managing frames within a scrollable list. FramePanel allows users to add,
+ * duplicate, select, and remove frames, and it emits signals for frame selection
+ * and canvas clearing. Each frame is displayed as a button, and the currently
+ * selected frame is visually highlighted.
+ *
+ * Author: Thu Ha - Phuc Hoang
+ * Date: 11/07/2024
+ * Reviewed by: Thu Ha
+ */
+
 #include "framepanel.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>

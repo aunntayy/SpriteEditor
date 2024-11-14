@@ -1,3 +1,17 @@
+/*
+ * Canvas.cpp
+ *
+ * Description:
+ * This header file defines the Canvas class, a QWidget-derived component for drawing
+ * and interacting with a pixel-based image. The Canvas class supports mouse-based drawing,
+ * frame updating, and color management. It also provides signals to notify other components
+ * when the canvas has been modified.
+ *
+ * Author: Phuc Hoang - Trenton Stratton
+ * Date: 11/7/2024
+ * Reviewed by: Phuc Hoang
+ */
+
 #include "canvas.h"
 #include <QPainter>
 #include <QMouseEvent>

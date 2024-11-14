@@ -1,3 +1,17 @@
+/*
+ * Model.h
+ *
+ * @brief Defines the Model class, which manages the application's core data,
+ * including frames, resolution, frame rate, and file save status. Model provides
+ * functions to add, duplicate, and remove frames, as well as update the current
+ * frame's image. It emits signals to update the frame list and drawing panel when
+ * changes occur.
+ *
+ * Author: Thu Ha - Phuc Hoang
+ * Date: 11/07/2024
+ * Reviewed by: Thu Ha
+ */
+
 #include "model.h"
 #include <QDebug>
 
