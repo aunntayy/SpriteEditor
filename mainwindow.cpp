@@ -263,14 +263,13 @@ MainWindow::MainWindow(QWidget *parent)
     toolBar->addSeparator();
 
     // undo button
-    QToolButton *undoAction = new QToolButton(this);
-    undoAction->setIcon(QIcon(":/img/img/undo.png"));
+    QAction *undoAction = new QAction(QIcon(":/img/img/undo.png"),"Undo", this);
 
     undoAction->setCheckable(true);
-    // toolGroup->addAction(undoAction);
-    toolBar->addWidget(undoAction);
+    toolGroup->addAction(undoAction);
+    toolBar->addAction(undoAction);
 
-    connect(undoAction, &QPushButton::clicked, this,
+    connect(undoAction, &QAction::triggered, this,
             [=]() { editor->undoLastAction(); });
 
     // set icon size here

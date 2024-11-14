@@ -79,7 +79,7 @@ void pixelEditor::drawPixel(int x, int y) {
 void pixelEditor::erasePixel(int x, int y) {
     if (canvasInstance) {
         QColor prevColor = canvasInstance->image.pixelColor(x, y);
-        if(prevColor != currentBrushColor){
+        if (prevColor != Qt::white) {
             addActionToHistory(x, y, prevColor);
         }
 
@@ -140,8 +140,8 @@ void pixelEditor::fillColor(int x, int y) {
 
         // condition to fill all the points that is not the same color with the brush color
         if (currImage.pixelColor(cx, cy) == targetAreaColor) {
-            currImage.setPixelColor(cx, cy, currentBrushColor);
 
+            currImage.setPixelColor(cx, cy, currentBrushColor);
             // Track filled pixel
             pixelData filledPoint = {QPoint((cx / pixelSize) * pixelSize, (cy / pixelSize) * pixelSize), currentBrushColor, pixelSize};
             drawnPixels.append(filledPoint);
