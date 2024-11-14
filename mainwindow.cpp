@@ -1,10 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-
-#include "model.h"
-#include "framepanel.h"
 #include "canvas.h"
+#include "framepanel.h"
+#include "model.h"
 
 #include <QToolBar>
 
@@ -13,16 +12,14 @@
 #include <QVBoxLayout>
 
 #include <QActionGroup>
-#include <QSplitter>
-#include <QLabel>
-#include <QSlider>
+#include <QColorDialog>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QSlider>
 #include <QSplitter>
-#include <QColorDialog>
-
+#include <QToolButton>
 void MainWindow::colorUI(QWidget *colorsTab) {
     QVBoxLayout *colorsLayout = new QVBoxLayout();
 
@@ -121,8 +118,30 @@ void MainWindow::colorUI(QWidget *colorsTab) {
     colorsTab->setLayout(colorsLayout);
 }
 
+void MainWindow::setResolutionOnLoad(QVector<int> brushSize) {
+    QMessageBox::StandardButton reply;
+    QMessageBox msgBox(this);
 
+    msgBox.setWindowTitle("Sprite Editor");
+    msgBox.setText("Choose the resolution:");
+    msgBox.setIcon(QMessageBox::Question);
 
+    QPushButton *bttn32x32 = msgBox.addButton("32x32", QMessageBox::AcceptRole);
+    QPushButton *bttn64x64 = msgBox.addButton("64x64", QMessageBox::AcceptRole);
+    QPushButton *bttn128x128 =
+        msgBox.addButton("128x128", QMessageBox::AcceptRole);
+
+    reply = static_cast<QMessageBox::StandardButton>(msgBox.exec());
+
+    if (msgBox.clickedButton() == bttn32x32) {
+        editor->setPixelSize(brushSize[2]);
+    } else if (msgBox.clickedButton() == bttn64x64) {
+        editor->setPixelSize(brushSize[1]);
+    } else if (msgBox.clickedButton() == bttn128x128) {
+        editor->setPixelSize(brushSize[0]);
+    }
+    this->resize(1920, 1080);
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -135,11 +154,8 @@ MainWindow::MainWindow(QWidget *parent)
     this->move(250, 50);
     this->setStatusBar(nullptr);
 
-
     // Instantiate the model
     model = new Model(this);
-
-
 
     // toolbar
     QToolBar *toolBar = addToolBar("Toolbar");
@@ -154,41 +170,41 @@ MainWindow::MainWindow(QWidget *parent)
     toolBar->addAction(saveButton);
     toolBar->addAction(loadButton);
 
-    //connect(&saveButton, &QAction::triggered, &fileManager, &FileManager::onSaveButtonClicked());
-
-
+    // connect(&saveButton, &QAction::triggered, &fileManager,
+    // &FileManager::onSaveButtonClicked());
 
     // panel
     QDockWidget *panel = new QDockWidget("Panel", this);
 
-    toolBar->setStyleSheet("background-color: rgb(100, 100, 100);"); //change color
-
+    toolBar->setStyleSheet(
+        "background-color: rgb(100, 100, 100);"); // change color
 
     // tool bar buttons
     // Spacer widget to push actions to the right
-    QWidget* spacer = new QWidget(this);
+    QWidget *spacer = new QWidget(this);
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     spacer->setFixedWidth(400); // Adjust this width to control the spacing
     toolBar->addWidget(spacer); // Add spacer to toolbar
 
     // Create an action group for mutually exclusive checkable actions
-    QActionGroup* toolGroup = new QActionGroup(this);
+    QActionGroup *toolGroup = new QActionGroup(this);
     toolGroup->setExclusive(true); // Only one action can be checked at a time
 
     // --++Checkable actions for Brush, Erase, and Fill with icons++--
 
     // brush size slider
-    QLabel* brushSizeLabel = new QLabel("20 px", this);
+    QLabel *brushSizeLabel = new QLabel("20 px", this);
 
-    QSlider* brushSizeSlider = new QSlider(Qt::Horizontal, this);
+    QSlider *brushSizeSlider = new QSlider(Qt::Horizontal, this);
 
     brushSizeSlider->setFixedWidth(100);
     QVector<int> brushSize = {20, 40, 60, 80, 100}; // adjust brush size here
-    brushSizeSlider->setRange(0, 4); // 4 different brush size
+    brushSizeSlider->setRange(0, 4);                // 4 different brush size
 
     connect(brushSizeSlider, &QSlider::valueChanged, this, [=](int value) {
         int currentBrushSize = brushSize[value];
-        brushSizeLabel->setText(QString::number(currentBrushSize) + " px"); // Update label
+        brushSizeLabel->setText(QString::number(currentBrushSize) +
+                                " px"); // Update label
     });
 
     // set default starting slider to 20px
@@ -199,7 +215,8 @@ MainWindow::MainWindow(QWidget *parent)
     toolBar->addWidget(brushSizeSlider);
 
     // brush button
-    QAction* brushAction = new QAction(QIcon(":/img/img/brush.png"), "Brush", this);
+    QAction *brushAction =
+        new QAction(QIcon(":/img/img/brush.png"), "Brush", this);
     brushAction->setCheckable(true);
     toolGroup->addAction(brushAction);
     toolBar->addAction(brushAction);
@@ -207,19 +224,20 @@ MainWindow::MainWindow(QWidget *parent)
     editor->setBrushColor(Qt::black);
 
     // erase button
-    QAction* eraseAction = new QAction(QIcon(":/img/img/erase.png"), "Erase", this);
+    QAction *eraseAction =
+        new QAction(QIcon(":/img/img/erase.png"), "Erase", this);
     eraseAction->setCheckable(true);
     toolGroup->addAction(eraseAction);
     toolBar->addAction(eraseAction);
 
     // fill button
-    QAction* fillAction = new QAction(QIcon(":/img/img/fill.png"), "Fill", this);
+    QAction *fillAction = new QAction(QIcon(":/img/img/fill.png"), "Fill", this);
     fillAction->setCheckable(true);
     toolGroup->addAction(fillAction);
     toolBar->addAction(fillAction);
 
     // move button
-    QAction* moveAction = new QAction(QIcon(":/img/img/move.png"), "Move", this);
+    QAction *moveAction = new QAction(QIcon(":/img/img/move.png"), "Move", this);
     moveAction->setCheckable(true);
     toolGroup->addAction(moveAction);
     toolBar->addAction(moveAction);
@@ -229,15 +247,12 @@ MainWindow::MainWindow(QWidget *parent)
         editor->setPixelSize(brushSize[index]);
         qDebug() << "Current brush size:" << brushSize[index];
     });
-    connect(brushAction, &QAction::triggered, this, [=]() {
-        editor->setTool(pixelEditor::Brush);
-    });
-    connect(eraseAction, &QAction::triggered, this, [=]() {
-        editor->setTool(pixelEditor::Erase);
-    });
-    connect(fillAction, &QAction::triggered, this, [=]() {
-        editor->setTool(pixelEditor::Fill);
-    });
+    connect(brushAction, &QAction::triggered, this,
+            [=]() { editor->setTool(pixelEditor::Brush); });
+    connect(eraseAction, &QAction::triggered, this,
+            [=]() { editor->setTool(pixelEditor::Erase); });
+    connect(fillAction, &QAction::triggered, this,
+            [=]() { editor->setTool(pixelEditor::Fill); });
 
     connect(moveAction, &QAction::triggered, this, [=]() {
         editor->setTool(pixelEditor::Move);
@@ -247,22 +262,20 @@ MainWindow::MainWindow(QWidget *parent)
     // Add a separator between the move and undo buttons
     toolBar->addSeparator();
 
-
     // undo button
-    QAction* undoAction = new QAction(QIcon(":/img/img/undo.png"), "Undo", this);
+    QToolButton *undoAction = new QToolButton(this);
+    undoAction->setIcon(QIcon(":/img/img/undo.png"));
+
     undoAction->setCheckable(true);
-    toolGroup->addAction(undoAction);
-    toolBar->addAction(undoAction);
+    // toolGroup->addAction(undoAction);
+    toolBar->addWidget(undoAction);
 
-    connect(undoAction, &QAction::triggered, this, [=]() {
-        editor->undoLastAction();
-    });
-
+    connect(undoAction, &QPushButton::clicked, this,
+            [=]() { editor->undoLastAction(); });
 
     // set icon size here
     toolBar->setIconSize(QSize(32, 32));
     // --++End of checkable actions for Brush, Erase, and Fill with icons++--
-
 
     panel->setFixedWidth(350);
     QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -319,7 +332,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(blueSlider, &QSlider::valueChanged, this,
             &MainWindow::updateColorOnSlider);
 
-
     updateColorOnSlider();
 
     // update color based on hex code
@@ -328,8 +340,8 @@ MainWindow::MainWindow(QWidget *parent)
     updateColorOnHexCode();
 
     //  update color cust om
-    for(int i = 0; i < 6;i++){
-        for(int j = 0; j < 6;j++){
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 6; j++) {
             connect(colorButtons[i][j], &QPushButton::clicked, this,
                     &MainWindow::updateColorCustomPalette);
         }
@@ -339,42 +351,40 @@ MainWindow::MainWindow(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout();
 
     // panel container
-    QWidget* panelContainer = new QWidget();
+    QWidget *panelContainer = new QWidget();
     panelContainer->setStyleSheet("background-color: rgb(100, 100, 100);");
     panel->setWidget(panelContainer);
 
     // preview area
-    QWidget* previewer = new QWidget();
+    QWidget *previewer = new QWidget();
     previewer->setFixedHeight(325);
     previewer->setStyleSheet("background-color: rgb(200, 200, 200);");
 
     // FramePanel - setup for managing frames
-    framePanel = new FramePanel(model, this);  // Instantiate FramePanel with Model
+    framePanel = new FramePanel(model, this); // Instantiate FramePanel with Model
 
     // Tab widget for Colors and Frames
     tabWidget->setTabShape(QTabWidget::Triangular);
     tabWidget->addTab(framePanel, "Frames"); // Use framePanel as the "Frames" tab
 
     // Styling for tab widget
-    tabWidget->setStyleSheet(
-        "QTabWidget::pane {"
-        "    border: 1px solid #ccc;"
-        "    background: #fafafa;"
-        "}"
-        "QTabBar::tab {"
-        "    background: #e0e0e0;"
-        "    border: 1px solid #ccc;"
-        "    padding: 3px;"
-        "    min-width: 80px;"
-        "}"
-        "QTabBar::tab:selected {"
-        "    background: #aaaaaa;"
-        "    color: white;"
-        "}"
-        "QTabBar::tab:hover {"
-        "    background: #ddd;"
-        "}"
-        );
+    tabWidget->setStyleSheet("QTabWidget::pane {"
+                             "    border: 1px solid #ccc;"
+                             "    background: #fafafa;"
+                             "}"
+                             "QTabBar::tab {"
+                             "    background: #e0e0e0;"
+                             "    border: 1px solid #ccc;"
+                             "    padding: 3px;"
+                             "    min-width: 80px;"
+                             "}"
+                             "QTabBar::tab:selected {"
+                             "    background: #aaaaaa;"
+                             "    color: white;"
+                             "}"
+                             "QTabBar::tab:hover {"
+                             "    background: #ddd;"
+                             "}");
 
     // Layout for panelContainer to hold previewer and tabWidget
 
@@ -385,16 +395,17 @@ MainWindow::MainWindow(QWidget *parent)
     // Add the panel as a dock widget
     addDockWidget(Qt::LeftDockWidgetArea, panel);
 
-
     // Canvas setup
     // Create the Canvas instance and set it as the central widget
-    int canvasWidth = 800; // Example width
+    int canvasWidth = 800;  // Example width
     int canvasHeight = 800; // Example height
 
     canvas = new Canvas(canvasWidth, canvasHeight, this);
     qDebug() << "canvas created";
     editor->setCanvasInstance(canvas);
     setCentralWidget(canvas);
+
+    setResolutionOnLoad(brushSize);
 
     connectSignals();
 }
@@ -434,13 +445,15 @@ void MainWindow::updateColorOnHexCode() {
     }
 }
 
-void MainWindow::updateColorCustomPalette(){
-    QPushButton *clickedButton = qobject_cast<QPushButton*>(sender());
+void MainWindow::updateColorCustomPalette() {
+    QPushButton *clickedButton = qobject_cast<QPushButton *>(sender());
 
     if (customColors.contains(clickedButton)) {
         // Set the button's color to the stored custom color
-        clickedButton->setStyleSheet(QString("background-color: %1;").arg(customColors[clickedButton].name()));
-        brushColor->setStyleSheet(QString("background-color: %1;").arg(customColors[clickedButton].name()));
+        clickedButton->setStyleSheet(QString("background-color: %1;")
+                                         .arg(customColors[clickedButton].name()));
+        brushColor->setStyleSheet(QString("background-color: %1;")
+                                      .arg(customColors[clickedButton].name()));
         hexLineEdit->setText(customColors[clickedButton].name());
     } else {
         // Open a color dialog to let the user choose a color
@@ -450,8 +463,10 @@ void MainWindow::updateColorCustomPalette(){
             QColor color = colorDialog.selectedColor();
 
             // Set the button's color and store it in the map
-            clickedButton->setStyleSheet(QString("background-color: %1;").arg(color.name()));
-            brushColor->setStyleSheet(QString("background-color: %1;").arg(color.name()));
+            clickedButton->setStyleSheet(
+                QString("background-color: %1;").arg(color.name()));
+            brushColor->setStyleSheet(
+                QString("background-color: %1;").arg(color.name()));
             customColors[clickedButton] = color;
             hexLineEdit->setText(color.name());
         }
@@ -467,21 +482,24 @@ void MainWindow::sendColorToEditor() {
     editor->setBrushColor(color);
 }
 
-void MainWindow::connectSignals()
-{
-    connect(canvas, &Canvas::mousePressCanvas, editor, &pixelEditor::drawWithCurrTool);
-    connect(canvas, &Canvas::sendCurrentImage, model, &Model::updateCurrentFrameImage);
-    connect(model, &Model::updateDrawingPanel, framePanel, &FramePanel::updateButtonIconBasedOnFrame);
+void MainWindow::connectSignals() {
+    connect(canvas, &Canvas::mousePressCanvas, editor,
+            &pixelEditor::drawWithCurrTool);
+    connect(canvas, &Canvas::sendCurrentImage, model,
+            &Model::updateCurrentFrameImage);
+    connect(model, &Model::updateDrawingPanel, framePanel,
+            &FramePanel::updateButtonIconBasedOnFrame);
     connect(framePanel, &FramePanel::clearCanvas, canvas, &Canvas::clear);
-    connect(framePanel, &FramePanel::frameSelected, canvas, &Canvas::drawFromFrame);
-    connect(canvas, &Canvas::canvasModified, model, &Model::updateCurrentFrameImage);
-    connect(model, &Model::updateFrameList, framePanel, &FramePanel::updateFrameList);
+    connect(framePanel, &FramePanel::frameSelected, canvas,
+            &Canvas::drawFromFrame);
+    connect(canvas, &Canvas::canvasModified, model,
+            &Model::updateCurrentFrameImage);
+    connect(model, &Model::updateFrameList, framePanel,
+            &FramePanel::updateFrameList);
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
     delete editor;
     delete canvas;
 }
-

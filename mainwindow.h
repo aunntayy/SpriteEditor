@@ -49,6 +49,8 @@ private:
 
     void connectSignals();
 
+    void setResolutionOnLoad(QVector<int> brushSize);
+
 private slots:
     void updateColorOnSlider();
     void updateColorOnHexCode();
