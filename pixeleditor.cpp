@@ -205,6 +205,9 @@ void pixelEditor::undoLastAction() {
     painter.setPen(Qt::NoPen);
     painter.setBrush(lastAction.currPixelColor);
     painter.drawRect(lastAction.pixelCoor.x(), lastAction.pixelCoor.y(),lastAction.currPixleSize,lastAction.currPixleSize);
+    // Track the undo pixel in drawnPixels
+    pixelData undoPixel = {QPoint(lastAction.pixelCoor.x(), lastAction.pixelCoor.y()), lastAction.currPixelColor, lastAction.currPixleSize};
+    drawnPixels.append(undoPixel);
     canvasInstance->update();
 }
 
