@@ -1,3 +1,15 @@
+/*
+ * Previewer.h
+ *
+ * @brief Defines the pixelEditor class, which manages pixel-based drawing operations
+ * on a Canvas. The class provides tools for editing, such as brush, erase, fill, move,
+ * and undo functionality. It maintains an action history to allow undo operations and
+ * manages color and pixel size for drawing operations.
+ *
+ * Author: Phuc Hoang - Trenton Stratton
+ * Reviewed by: Phuc Hoang
+ */
+
 #ifndef PREVIEWER_H
 #define PREVIEWER_H
 
