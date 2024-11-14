@@ -79,80 +79,77 @@ void pixelEditor::drawPixel(int x, int y) {
 void pixelEditor::erasePixel(int x, int y) {
     if (canvasInstance) {
         QColor prevColor = canvasInstance->image.pixelColor(x, y);
+
+        // Only proceed if the pixel is not already white
         if (prevColor != Qt::white) {
+            // Save the current color for undo
             addActionToHistory(x, y, prevColor);
+
+            // Set up the painter to draw the erase color (white)
+            QPainter painter(&canvasInstance->image);
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(Qt::white);
+
+            // Draw a white rectangle at the specified grid position
+            painter.drawRect(x, y, pixelSize, pixelSize);
+
+            // Append the action to drawnPixels as white to represent the erase action
+            pixelData erasedPixel = {QPoint(x, y), Qt::white, pixelSize};
+            drawnPixels.append(erasedPixel);
+
+            // Update the canvas to show the erased area
+            canvasInstance->update();
         }
-
-        // range check
-        if (x < 0 || x >= canvasInstance->width() || y < 0 || y >= canvasInstance->height()) {
-            return;
-        }
-
-        QPainter painter(&canvasInstance->image);
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(QBrush(Qt::white));
-
-        // Remove the pixel from drawnPixels
-        for (int i = 0; i < drawnPixels.size(); ++i) {
-            if (drawnPixels[i].pixelCoor == QPoint(x, y)) {
-                drawnPixels.removeAt(i);
-                break;
-            }
-        }
-
-        // Also remove the pixel from originalDrawnPixels
-        for (int i = 0; i < originalDrawnPixels.size(); ++i) {
-            if (originalDrawnPixels[i].pixelCoor == QPoint(x, y)) {
-                originalDrawnPixels.removeAt(i);
-                break;
-            }
-        }
-
-        // Draw rect
-        painter.drawRect(x, y, pixelSize, pixelSize);
-        canvasInstance->update();
     }
 }
 
 void pixelEditor::fillColor(int x, int y) {
-    // take the current image object to modify directly
     QImage& currImage = canvasInstance->image;
-    // get the clicked spot color
     QColor targetAreaColor = currImage.pixelColor(x, y);
 
-    // if the fill color is the same color with the area that need to be fill
+    // Prevent infinite loop if the target color is the same as the fill color
     if (targetAreaColor == currentBrushColor) {
-        return; // Prevent infinite loop if the target color is the same as the fill color
+        return;
     }
-    // have a stack and put all the points in
+
+    // Stack for fill algorithm
     QStack<QPoint> points;
     points.push(QPoint(x, y));
-    // fill Algo
+
+    // Temporary list to store all affected pixels for this fill action
+    QVector<pixelData> fillAction;
+
     while (!points.isEmpty()) {
         QPoint currentPoint = points.pop();
-        int cx = currentPoint.x();
-        int cy = currentPoint.y();
+        int cx = (currentPoint.x() / pixelSize) * pixelSize;
+        int cy = (currentPoint.y() / pixelSize) * pixelSize;
 
-        // range check
+        // Range check
         if (cx < 0 || cx >= canvasInstance->width() || cy < 0 || cy >= canvasInstance->height()) {
-            continue;  // Skip point out of bounds
+            continue;
         }
 
-        // condition to fill all the points that is not the same color with the brush color
+        // Check if the pixel at the grid position matches the target color
         if (currImage.pixelColor(cx, cy) == targetAreaColor) {
+            // Save the current color and grid position to fillAction before filling
+            fillAction.append({QPoint(cx, cy), targetAreaColor, pixelSize});
 
-            currImage.setPixelColor(cx, cy, currentBrushColor);
-            // Track filled pixel
-            pixelData filledPoint = {QPoint((cx / pixelSize) * pixelSize, (cy / pixelSize) * pixelSize), currentBrushColor, pixelSize};
-            drawnPixels.append(filledPoint);
+            // Set the pixel color to the fill color within the grid cell
+            QPainter painter(&currImage);
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(currentBrushColor);
+            painter.drawRect(cx, cy, pixelSize, pixelSize);
 
-            points.push(QPoint(cx + 1, cy));
-            points.push(QPoint(cx - 1, cy));
-            points.push(QPoint(cx, cy + 1));
-            points.push(QPoint(cx, cy - 1));
+            // Add neighboring grid points to the stack
+            points.push(QPoint(cx + pixelSize, cy));
+            points.push(QPoint(cx - pixelSize, cy));
+            points.push(QPoint(cx, cy + pixelSize));
+            points.push(QPoint(cx, cy - pixelSize));
         }
     }
 
+    // Save the entire fill action as a single entry in the action history
+    actionHistory.append(fillAction);
     canvasInstance->update();
 }
 

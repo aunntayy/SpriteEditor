@@ -61,6 +61,7 @@ private:
     bool isMoving;
     QColor currentBrushColor;
     QList<pixelData> actionHistory;
+
 };
 
 #endif // PIXELEDITOR_H
